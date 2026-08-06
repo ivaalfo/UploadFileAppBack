@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans 	xmlns="http://www.springframework.org/schema/beans" 
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+		xmlns:mvc="http://www.springframework.org/schema/mvc"
+		xmlns:context="http://www.springframework.org/schema/context"
+		xmlns:jee="http://www.springframework.org/schema/jee"
+		xsi:schemaLocation="http://www.springframework.org/schema/beans 
+							http://www.springframework.org/schema/beans/spring-beans-4.3.xsd 
+							http://www.springframework.org/schema/mvc 
+							http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+							http://www.springframework.org/schema/context 
+							http://www.springframework.org/schema/context/spring-context-4.3.xsd
+							http://www.springframework.org/schema/jee
+							http://www.springframework.org/schema/jee/spring-jee-4.3.xsd"
+		default-init-method="init">
+
+<!-- <context:component-scan base-package="eus.martico.fileTransfer.plf.seguridad.security"/> -->
+
+	<!-- Cargamos los controladores -->
+	<context:component-scan base-package="eus.martico.fileTransfer.control"/>
+	<context:component-scan base-package="eus.martico.fileTransfer.seguridad.control"/>
+
+	<mvc:cors>
+		<mvc:mapping path="/**" allowed-methods="*" allowed-headers="*" exposed-headers="Content-Disposition,Authorization"
+					allowed-origins="*"
+					allow-credentials="true" 
+		/>
+	</mvc:cors>
+	
+	<mvc:resources location="/static/" mapping="/static/**"/>
+	<mvc:resources location="/vendor/" mapping="/vendor/**"/>
+	
+	<mvc:annotation-driven>
+	    <mvc:argument-resolvers>
+	        <bean class="org.springframework.security.web.method.annotation.AuthenticationPrincipalArgumentResolver"/>
+	    </mvc:argument-resolvers>
+	</mvc:annotation-driven>
+
+	<!-- Configures Handler Interceptors -->
+    <mvc:interceptors>
+	<!-- Changes the locale when a 'locale' request parameter is sent; e.g. /?locale=en -->
+        <bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor" />
+    </mvc:interceptors>
+    
+	<!-- Saves a locale change using a cookie -->
+    <bean id="localeResolver" class="org.springframework.web.servlet.i18n.CookieLocaleResolver">
+        <property name="cookieName">
+            <value>language</value>
+        </property>
+    </bean>
+<!-- 	<bean id="multipartResolver" -->
+<!-- 		class="org.springframework.web.multipart.commons.CommonsMultipartResolver"> -->
+<!-- 		<property name="maxUploadSize" value="1000000" /> -->
+<!-- 	</bean>	 -->
+<!-- Define Spring MVC view resolver -->
+    <bean
+        class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/views/" />
+        <property name="suffix" value=".jsp" />
+    </bean>
+	
+</beans>
+

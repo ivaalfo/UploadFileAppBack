@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+	<licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>https://raw.github.com/WASdev/ci.maven.tools/master/LICENSE</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+	<modelVersion>4.0.0</modelVersion>
+ 	<parent>
+		<groupId>eus.martico</groupId>
+		<artifactId>fileTransfer-parent</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+ 		<relativePath>../fileTransferPOM/pom.xml</relativePath> 
+	</parent>
+ 
+  <artifactId>fileTransferWAR</artifactId>
+  <packaging>war</packaging>
+ 
+  <name>fileTransferWAR</name>
+  <url>http://maven.apache.org</url>
+
+  <properties>
+  		<scope.variable>provided</scope.variable>
+  		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  		<parent.version>0.0.1-SNAPSHOT</parent.version>
+  </properties>
+
+   <dependencies>
+   		<!-- https://mvnrepository.com/artifact/javax/javaee-api -->
+		<dependency>
+		    <groupId>javax</groupId>
+		    <artifactId>javaee-api</artifactId>
+		    <scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<scope>${scope.variable}</scope>            		    
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpmime -->
+		<dependency>
+		    <groupId>org.apache.httpcomponents</groupId>
+		    <artifactId>httpmime</artifactId>
+	        <scope>${scope.variable}</scope> 
+		</dependency>
+	   	<dependency>
+	   		<groupId>org.springframework</groupId>
+	   		<artifactId>spring-web</artifactId>
+	   		<scope>${scope.variable}</scope>
+	   	</dependency>
+	  		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<scope>${scope.variable}</scope>
+		</dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+            <scope>${scope.variable}</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-tx</artifactId>
+            <scope>${scope.variable}</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-expression</artifactId>
+            <scope>${scope.variable}</scope>
+        </dependency>
+		<dependency>
+		    <groupId>org.springframework</groupId>
+		    <artifactId>spring-jdbc</artifactId>
+		    <scope>${scope.variable}</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-core</artifactId>
+			<scope>${scope.variable}</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-web</artifactId>
+			<scope>${scope.variable}</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-config</artifactId>
+			<scope>${scope.variable}</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-ldap</artifactId>
+			<scope>${scope.variable}</scope>
+		</dependency>		
+		<dependency>
+		    <groupId>commons-configuration</groupId>
+		    <artifactId>commons-configuration</artifactId>
+	        <scope>${scope.variable}</scope>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
+		<dependency>
+	        <groupId>commons-io</groupId>
+	        <artifactId>commons-io</artifactId>
+	        <version>2.14.0</version>
+	    </dependency>
+	    <dependency>
+	      <groupId>org.projectlombok</groupId>
+	      <artifactId>lombok</artifactId>
+	      <scope>${scope.variable}</scope>
+	    </dependency>
+	    <dependency>
+	      <groupId>io.jsonwebtoken</groupId>
+	      <artifactId>jjwt</artifactId>
+	      <scope>${scope.variable}</scope>
+	    </dependency>
+		<dependency>
+		    <groupId>org.slf4j</groupId>
+		    <artifactId>slf4j-api</artifactId>
+			<scope>${scope.variable}</scope>
+		</dependency>
+		<dependency>
+		    <groupId>org.json</groupId>
+		    <artifactId>json</artifactId>
+		    <scope>${scope.variable}</scope>
+		</dependency>
+	<!-- Dependencias App -->
+   	<dependency>
+   		<groupId>eus.martico</groupId>
+   		<artifactId>fileTransferJAR</artifactId>
+   		<version>${parent.version}</version>
+   		<scope>${scope.variable}</scope>
+   	</dependency>
+   	<dependency>
+   		<groupId>eus.martico</groupId>
+   		<artifactId>fileTransferSEGjar</artifactId>
+   		<version>${parent.version}</version>
+   		<scope>${scope.variable}</scope>
+   	</dependency>
+   	<dependency>
+   		<groupId>eus.martico</groupId>
+   		<artifactId>fileTransferTIMERejb</artifactId>
+   		<version>0.0.1-SNAPSHOT</version>
+   		<scope>${scope.variable}</scope>
+   	</dependency>
+   </dependencies>
+
+  <build>
+    <finalName>fileTransferWAR</finalName>
+	  <plugins>
+		 <plugin>
+	        <groupId>org.apache.maven.plugins</groupId>
+	        <artifactId>maven-compiler-plugin</artifactId>
+	        <version>3.8.0</version>
+	        <configuration>
+	          <source>1.8</source>
+	          <target>1.8</target>
+	        </configuration>
+	      </plugin>
+	      <plugin>
+	        <artifactId>maven-war-plugin</artifactId>
+	        <version>3.2.1</version>
+	        <configuration>
+	          <warSourceDirectory>src/main/webapp</warSourceDirectory>
+	        </configuration>
+	      </plugin>
+	  </plugins>
+  </build>
+
+  <version>1.0</version>
+</project>

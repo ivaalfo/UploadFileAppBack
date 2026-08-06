@@ -1,0 +1,225 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>eus.martico</groupId>
+		<artifactId>fileTransfer-parent</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+ 		<relativePath>../fileTransferPOM/pom.xml</relativePath> 
+	</parent>
+	<artifactId>fileTransferJAR</artifactId>
+	<packaging>jar</packaging>
+	<name>fileTransferJAR</name>
+	<description>fileTransfer utiles</description>
+	<properties>
+		<scope.variable>provided</scope.variable>
+<!-- 		<org.springframework.version>5.1.4.RELEASE</org.springframework.version> -->
+<!-- 		<org.apache.http.version>4.3.6</org.apache.http.version> -->
+<!-- 		<org.slf4j.version>1.7.25</org.slf4j.version> -->
+		<apache.logging.log4j.version>2.16.0</apache.logging.log4j.version>
+<!-- 		<jackson.version>2.9.7</jackson.version> -->
+	</properties> 
+	<dependencies>
+		<!-- https://mvnrepository.com/artifact/javax/javaee-api -->
+		<dependency>
+		    <groupId>javax</groupId>
+		    <artifactId>javaee-api</artifactId>
+		    <scope>provided</scope>
+		</dependency>	
+		<!-- https://mvnrepository.com/artifact/org.apache.santuario/xmlsec -->
+		<dependency>
+		    <groupId>org.apache.santuario</groupId>
+		    <artifactId>xmlsec</artifactId>
+		    <scope>${scope.variable}</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<scope>${scope.variable}</scope>            		    
+		</dependency>
+<!--         <dependency> -->
+<!--             <groupId>org.apache.httpcomponents</groupId> -->
+<!--             <artifactId>httpcore</artifactId> -->
+<!--             <scope>${scope.variable}</scope> -->
+<!--         </dependency> -->
+		<!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpmime -->
+		<dependency>
+		    <groupId>org.apache.httpcomponents</groupId>
+		    <artifactId>httpmime</artifactId>
+		    <scope>${scope.variable}</scope>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpasyncclient -->
+		<dependency>
+		    <groupId>org.apache.httpcomponents</groupId>
+		    <artifactId>httpasyncclient</artifactId>
+		    <scope>${scope.variable}</scope>
+		</dependency>		
+		<dependency>
+		    <groupId>org.slf4j</groupId>
+		    <artifactId>slf4j-api</artifactId>
+			<scope>${scope.variable}</scope>
+		</dependency>
+		<dependency> 
+		    <groupId>org.apache.logging.log4j</groupId> 
+		    <artifactId>log4j-slf4j-impl</artifactId>
+			<scope>${scope.variable}</scope>
+		</dependency>
+		<dependency>
+		    <groupId>commons-configuration</groupId>
+		    <artifactId>commons-configuration</artifactId>
+		    <scope>${scope.variable}</scope>
+		</dependency>
+<!-- 	  	<dependency> -->
+<!-- 	  		<groupId>org.springframework</groupId> -->
+<!-- 	  		<artifactId>spring-context</artifactId> -->
+<!-- 		</dependency> -->
+<!-- 	   	<dependency> -->
+<!-- 	   		<groupId>org.springframework</groupId> -->
+<!-- 	   		<artifactId>spring-web</artifactId> -->
+<!-- 	   	</dependency> -->
+<!-- 	  		<dependency> -->
+<!-- 			<groupId>org.springframework</groupId> -->
+<!-- 			<artifactId>spring-webmvc</artifactId> -->
+<!-- 		</dependency> -->
+		<!-- https://mvnrepository.com/artifact/org.springframework/spring-jdbc -->
+		<dependency>
+		    <groupId>org.springframework</groupId>
+		    <artifactId>spring-jdbc</artifactId>
+		    <scope>${scope.variable}</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-core</artifactId>
+			<scope>${scope.variable}</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-web</artifactId>
+			<scope>${scope.variable}</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-config</artifactId>
+			<scope>${scope.variable}</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-ldap</artifactId>
+			<scope>${scope.variable}</scope>
+		</dependency>		
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+			<scope>${scope.variable}</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<scope>${scope.variable}</scope>
+		</dependency>
+		<dependency>
+		  <groupId>io.jsonwebtoken</groupId>
+		  <artifactId>jjwt</artifactId>
+		  <scope>${scope.variable}</scope>
+		</dependency>
+		<dependency>
+		    <groupId>commons-codec</groupId>
+		    <artifactId>commons-codec</artifactId>
+		    <scope>${scope.variable}</scope>
+		</dependency>
+		<dependency>
+		    <groupId>org.json</groupId>
+		    <artifactId>json</artifactId>
+		    <scope>${scope.variable}</scope>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.jcraft/jsch -->
+		<!--  sftp -->
+		<dependency>
+		    <groupId>com.jcraft</groupId>
+		    <artifactId>jsch</artifactId>
+		    <scope>${scope.variable}</scope>
+		</dependency>
+	    <dependency>
+	        <groupId>commons-io</groupId>
+	        <artifactId>commons-io</artifactId>
+	        <version>2.14.0</version>
+	    </dependency>
+		<!-- https://mvnrepository.com/artifact/com.convertapi.client/convertapi -->
+		<dependency>
+		    <groupId>com.convertapi.client</groupId>
+		    <artifactId>convertapi</artifactId>
+		    <version>2.13</version>
+		</dependency>
+		<!-- librería open-source Apache PDFBox -->
+		<dependency>
+		    <groupId>org.apache.pdfbox</groupId>
+		    <artifactId>pdfbox</artifactId>
+		    <version>2.0.31</version>
+		</dependency>
+		<!-- PARA CERTIFICAR LOS CMRs -->
+		<!-- Motor de firma PAdES específico para Apache PDFBox -->
+		<dependency>
+		    <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+		    <artifactId>dss-pades-pdfbox</artifactId>
+		    <version>5.13</version>
+		</dependency>
+		<!-- Modelo de datos y lógica del estándar PAdES -->
+		<dependency>
+		    <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+		    <artifactId>dss-pades</artifactId>
+		    <version>5.13</version>
+		</dependency>
+		<!-- Estructura base para el manejo de documentos en DSS -->
+		<dependency>
+		    <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+		    <artifactId>dss-document</artifactId>
+		    <version>5.13</version>
+		</dependency>
+		<!-- Lector de almacenes de claves y certificados PKCS12 -->
+		<dependency>
+		    <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+		    <artifactId>dss-token</artifactId>
+		    <version>5.13</version>
+		</dependency>
+		<!-- Utils y librerias necesarias para la certificacion de pdfs -->
+		<dependency>
+		    <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+		    <artifactId>dss-utils-apache-commons</artifactId>
+		    <version>5.13</version>
+		</dependency>
+		<dependency>
+		    <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+		    <artifactId>dss-service</artifactId>
+		    <version>5.13</version>
+		</dependency>
+		
+	</dependencies>
+	<build>
+		<sourceDirectory>src/main/java</sourceDirectory>
+		<testSourceDirectory>src/test/java</testSourceDirectory>
+		<resources>
+			<resource>
+				<directory>src/main/java</directory>
+				<excludes>
+					<exclude>**/*.java</exclude>
+				</excludes>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<excludes>
+					<exclude>**/*.java</exclude>
+				</excludes>
+			</resource>
+		</resources>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.8.0</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

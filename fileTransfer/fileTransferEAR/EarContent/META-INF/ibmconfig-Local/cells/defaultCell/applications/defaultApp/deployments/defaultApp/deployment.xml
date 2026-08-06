@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<appdeployment:Deployment xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:appdeployment="http://www.ibm.com/websphere/appserver/schemas/5.0/appdeployment.xmi" xmi:id="Deployment_1585067718759">
+  <deployedObject xmi:type="appdeployment:ApplicationDeployment" xmi:id="ApplicationDeployment_1585067718759" deploymentId="0" startingWeight="1" binariesURL="$(APP_INSTALL_ROOT)/${WAS_CELL_NAME}/fileTransferEAR.ear" useMetadataFromBinaries="false" enableDistribution="true" createMBeansForResources="true" reloadEnabled="false" appContextIDForSecurity="href:${WAS_CELL_NAME}/fileTransferEAR" filePermission=".*\.dll=755#.*\.so=755#.*\.a=755#.*\.sl=755" allowDispatchRemoteInclude="false" allowServiceRemoteInclude="false" asyncRequestDispatchType="DISABLED" standaloneModule="false" enableClientModule="false">
+    <targetMappings xmi:id="DeploymentTargetMapping_1585067718759" enable="true" target="ServerTarget_1585067718759"/>
+    <classloader xmi:id="Classloader_1585067718759" mode="PARENT_FIRST">
+      <libraries xmi:id="LibraryRef_1585067718759" libraryName="FileTransfer-SharedLib" sharedClassloader="true"/>
+      <libraries xmi:id="LibraryRef_1585067718760" libraryName="Martico-FileTransfer-SharedLib" sharedClassloader="true"/>
+    </classloader>
+    <modules xmi:type="appdeployment:WebModuleDeployment" xmi:id="WebModuleDeployment_1585067718759" deploymentId="1" startingWeight="10000" uri="fileTransferWAR-0.0.1-SNAPSHOT.war" containsEJBContent="0">
+      <targetMappings xmi:id="DeploymentTargetMapping_1585067718760" target="ServerTarget_1585067718759"/>
+      <classloader xmi:id="Classloader_1585067718760"/>
+    </modules>
+    <modules xmi:type="appdeployment:WebModuleDeployment" xmi:id="WebModuleDeployment_1585067718760" deploymentId="1" startingWeight="10000" uri="fileTransferLOGINwar-0.0.1-SNAPSHOT.war" containsEJBContent="0">
+      <targetMappings xmi:id="DeploymentTargetMapping_1585067718761" target="ServerTarget_1585067718759"/>
+      <classloader xmi:id="Classloader_1585067718761"/>
+    </modules>
+    <modules xmi:type="appdeployment:EJBModuleDeployment" xmi:id="EJBModuleDeployment_1585067718760" deploymentId="1" startingWeight="5000" uri="fileTransferTIMERejb-0.0.1-SNAPSHOT.jar">
+      <targetMappings xmi:id="DeploymentTargetMapping_1585067718762" target="ServerTarget_1585067718759"/>
+    </modules>
+    <properties xmi:id="Property_1585067718760" name="metadata.complete" value="false"/>
+  </deployedObject>
+  <deploymentTargets xmi:type="appdeployment:ServerTarget" xmi:id="ServerTarget_1585067718759" name="server1" nodeName="${WAS_CELL_NAME}"/>
+</appdeployment:Deployment>

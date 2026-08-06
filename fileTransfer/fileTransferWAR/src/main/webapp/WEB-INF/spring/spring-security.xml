@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:beans="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans.xsd 
+						http://www.springframework.org/schema/security 
+						http://www.springframework.org/schema/security/spring-security.xsd">
+
+
+<!-- <http pattern="/**" security="none"/> -->
+	 
+
+	<beans:bean name="myAccessDeniedHandler"
+	  class="eus.martico.fileTransfer.seguridad.security.MyAccessDeniedHandler" />
+	 
+	<beans:bean name="restAuthenticationEntryPoint" id ="restAuthenticationEntryPoint"
+	  class="eus.martico.fileTransfer.seguridad.security.RestAuthenticationEntryPoint" />
+
+	<beans:bean id="corsFilter" class="eus.martico.fileTransfer.seguridad.security.CorsFilter" />
+		
+	<http pattern="/public/**" security="none"/>
+	<http pattern="/entrada/login" security="none"/>
+	<http pattern="/entrada/token" security="none"/>
+	<http pattern="/error" security="none"/>
+	<http pattern="/static/**" security="none"/>
+	<http pattern="/*.html" security="none"/>
+	
+    <http pattern="/**" use-expressions="true" entry-point-ref="restAuthenticationEntryPoint" disable-url-rewriting="true">
+
+		<!-- Permitir llamadas internas de la propia máquina (127.0.0.1 o su IP fija) -->
+		<intercept-url pattern="/api/v1/admin/bloqueo/**" access="hasIpAddress('127.0.0.1') or hasIpAddress('192.168.50.200') or hasAuthority('FTADM')"/>
+		<intercept-url pattern="/api/v1/admin/**" access="hasAuthority('FTADM')"/>
+
+		<intercept-url pattern="/api/v1/postlogin" method="GET" access="isAuthenticated()"  />
+		<intercept-url pattern="/api/v1/pedidosActivos" method="GET" access="isAuthenticated()" />
+		<intercept-url pattern="/api/v1/pedidosActivos/**" method="GET" access="isAuthenticated()" />
+		<intercept-url pattern="/api/v1/pedidosValidador" method="GET" access="isAuthenticated()" />
+		<intercept-url pattern="/api/v1/pedidosValidador/**" method="GET" access="isAuthenticated()" />
+		<intercept-url pattern="/api/v1/files" method="GET" access="isAuthenticated()" />
+		<intercept-url pattern="/api/v1/files/**" method="GET" access="isAuthenticated()" />
+		
+		
+<!--  MANTENIMIENTOS INI -->
+		<intercept-url pattern="/api/v1/usuarios/**" 		access="hasAuthority('FTADM') OR hasAuthority('FTINTER') OR hasAuthority('FTCONSUL') OR hasAuthority('FTEXTER')" />
+		<intercept-url pattern="/api/v1/pedidosActivos/**" 	access="hasAuthority('FTADM') OR hasAuthority('FTINTER') OR hasAuthority('FTCONSUL') OR hasAuthority('FTEXTER')" />
+		<intercept-url pattern="/api/v1/pedidosValidador/**" access="hasAuthority('FTADM') OR hasAuthority('FTINTER') OR hasAuthority('FTCONSUL')" />
+		<intercept-url pattern="/api/v1/pedidosHistorico/**" access="hasAuthority('FTADM') OR hasAuthority('FTINTER') OR hasAuthority('FTCONSUL') OR hasAuthority('FTEXTER')" />
+		<intercept-url pattern="/api/v1/files/**" 			access="hasAuthority('FTADM') OR hasAuthority('FTINTER') OR hasAuthority('FTCONSUL') OR hasAuthority('FTEXTER')" />	
+<!--  MANTENIMIENTOS FIN -->
+
+<!-- 		<intercept-url pattern="/api/v1/rpg/**" access="hasAuthority('SIS') AND hasAuthority('MAR')" /> -->
+		
+  		<intercept-url pattern="/api/v1/**" access="isAuthenticated()" /> 
+  		
+		<intercept-url pattern="/home" access="isAuthenticated()" />	
+<!--  		<intercept-url pattern="/files/**" access="hasAuthority('USW')" /> -->
+ 		
+		<intercept-url pattern="/users/**" access="hasAuthority('FTADM')" />
+<!-- 		<intercept-url pattern="/users/**" access="hasRole('FTADM')" /> -->
+
+		<csrf disabled="true"></csrf>
+
+<!-- 		<form-login authentication-success-handler-ref="mySuccessHandler" -->
+<!-- 			authentication-failure-handler-ref="myFailureHandler" /> -->
+        
+<!--         <access-denied-handler error-page="/error" /> -->       
+        <access-denied-handler ref="myAccessDeniedHandler" />
+        
+        <!-- CORS -->
+        <custom-filter ref="corsFilter" before="HEADERS_FILTER"/>
+        
+   	    <!-- logout logout-success-url=""/ -->
+		<custom-filter before="ANONYMOUS_FILTER" ref="tokenFilter" />
+
+	</http>
+
+<!-- 	<beans:bean id="mySuccessHandler" -->
+<!-- 		class="org.baeldung.security.MySavedRequestAwareAuthenticationSuccessHandler" /> -->
+		
+<!-- 	<beans:bean id="myFailureHandler" -->
+<!-- 		class="org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler" /> -->
+
+	<authentication-manager id="authenticationManager" alias="authenticationManager">
+		<authentication-provider
+		      ref="tokenAuthenticationProvider" />	
+<!-- 		<authentication-provider> -->
+<!-- 			<user-service>			 -->
+<!-- 				<user name="temporary" password="temporary" authorities="ROLE_ADMIN" /> -->
+<!-- 				<user name="user" password="userPass" authorities="ROLE_USER" /> -->
+<!--                 <user name="user1" password="user1Pass" authorities="ROLE_USER"/> -->
+<!--                 <user name="admin" password="adminPass" authorities="ROLE_ADMIN"/>                 -->
+<!-- 			</user-service>			 -->
+<!-- 		</authentication-provider> -->
+
+	</authentication-manager>
+
+	<beans:bean id="antPathRequestMatcherUsers" 
+		class="org.springframework.security.web.util.matcher.AntPathRequestMatcher">
+		<beans:constructor-arg value="/users/**"></beans:constructor-arg>
+	</beans:bean>
+	<beans:bean id="antPathRequestMatcherFiles" 
+		class="org.springframework.security.web.util.matcher.AntPathRequestMatcher">
+		<beans:constructor-arg value="/files/**"></beans:constructor-arg>
+	</beans:bean>
+	<beans:bean id="antPathRequestMatcherApi" 
+		class="org.springframework.security.web.util.matcher.AntPathRequestMatcher">
+		<beans:constructor-arg value="/api/**"></beans:constructor-arg>
+	</beans:bean>
+	<beans:bean id="antPathRequestMatcherHome" 
+		class="org.springframework.security.web.util.matcher.AntPathRequestMatcher">
+		<beans:constructor-arg value="/home"></beans:constructor-arg>
+	</beans:bean>
+	<beans:bean id="antPathRequestMatcherPublic" 
+		class="org.springframework.security.web.util.matcher.AntPathRequestMatcher">
+		<beans:constructor-arg value="/public/**"></beans:constructor-arg>
+	</beans:bean>
+	<beans:bean id="antPathRequestMatcherEntrada" 
+		class="org.springframework.security.web.util.matcher.AntPathRequestMatcher">
+		<beans:constructor-arg value="/entrada/login"></beans:constructor-arg>
+	</beans:bean>
+	<beans:bean id="orRequestMatchers" 
+		class="org.springframework.security.web.util.matcher.OrRequestMatcher">
+		<beans:constructor-arg>
+	        <beans:list>
+<!-- 	           <beans:ref bean="antPathRequestMatcherUsers"/> -->
+<!-- 	           <beans:ref bean="antPathRequestMatcherApi"/> -->
+<!-- 	           <beans:ref bean="antPathRequestMatcherHome"/> -->
+<!-- 	           <beans:ref bean="antPathRequestMatcherFiles"/> -->
+	           <beans:ref bean="antPathRequestMatcherPublic"/>
+	           <beans:ref bean="antPathRequestMatcherEntrada"/>
+	        </beans:list>
+	    </beans:constructor-arg>
+	</beans:bean>
+	<!--  Todas las uris que no sean ... -->
+	<beans:bean id="negatedRequestMatcher" 
+		class="org.springframework.security.web.util.matcher.NegatedRequestMatcher">
+		<beans:constructor-arg index="0" ref="orRequestMatchers"/>
+	</beans:bean>
+
+	<beans:bean id="simpleUrlAuthenticationSuccessHandler" 
+		class="org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler">
+		<beans:property name="redirectStrategy" ref="noRedirectStrategy"></beans:property>
+	</beans:bean>
+	<beans:bean id="myUrlAuthenticationFailureHandler" 
+		class="eus.martico.fileTransfer.seguridad.security.MyUrlAuthenticationFailureHandler">
+		<beans:property name="redirectStrategy" ref="noRedirectStrategy"></beans:property>
+	</beans:bean>
+
+	<beans:bean id="tokenFilter" class="eus.martico.fileTransfer.seguridad.security.TokenAuthenticationFilter">
+		<beans:constructor-arg index="0" ref="negatedRequestMatcher"/>
+		<beans:property name="authenticationManager" ref="authenticationManager"/>
+		<beans:property name="authenticationSuccessHandler" ref="simpleUrlAuthenticationSuccessHandler"/>
+		<beans:property name="authenticationFailureHandler" ref="myUrlAuthenticationFailureHandler"/>
+	</beans:bean>
+
+    <global-method-security pre-post-annotations="enabled"/>
+
+	<beans:bean id="myHttpFirewall" class="org.springframework.security.web.firewall.StrictHttpFirewall">
+	    <beans:property name="allowSemicolon" value="true"/>
+	    <beans:property name="allowUrlEncodedPercent" value="true"/>
+	</beans:bean>
+	<http-firewall ref="myHttpFirewall"/>
+    
+</beans:beans>

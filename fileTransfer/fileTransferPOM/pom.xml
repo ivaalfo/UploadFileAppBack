@@ -1,0 +1,389 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    JBoss, Home of Professional Open Source
+    Copyright 2015, Red Hat, Inc. and/or its affiliates, and individual
+    contributors by the @authors tag. See the copyright.txt in the
+    distribution for a full listing of individual contributors.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+    http://www.apache.org/licenses/LICENSE-2.0
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>eus.martico</groupId>
+    <artifactId>fileTransfer-parent</artifactId>
+    <!--
+        Maintain separation between the artifact id and the version to help prevent
+        merge conflicts between commits changing the GA and those changing the V.
+        -->
+    <version>0.0.1-SNAPSHOT</version>
+
+    <packaging>pom</packaging>
+
+    <name>fileTransferParent</name>
+    <description>Aplicación para subida de ficheros: Parent. Martico S.L.</description>
+    <!--url>http://www.jboss.org/jdf/quickstarts/get-started/</url-->
+
+    <!-- <licenses> -->
+        <!-- <license> -->
+            <!-- <name>Apache License, Version 2.0</name> -->
+            <!-- <url>http://www.apache.org/licenses/LICENSE-2.0.html</url> -->
+            <!-- <distribution>repo</distribution> -->
+        <!-- </license> -->
+    <!-- </licenses> -->
+
+    <properties>
+		<scope.variable>compile</scope.variable>
+        <root.dir>${project.basedir}</root.dir>
+        <product.version>0.0.1-SNAPSHOT</product.version>
+        <!-- A base list of dependency and plug-in version used in the various quick starts. -->
+        <version.checkstyle>8.5</version.checkstyle>
+        <version.jaxws-tools-maven-plugin>1.2.2.Final</version.jaxws-tools-maven-plugin>
+        <!-- Explicitly declaring the source encoding eliminates the following
+            message: [WARNING] Using platform encoding (UTF-8 actually) to copy
+            filtered resources, i.e. build is platform dependent! -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<org.slf4j.version>1.7.25</org.slf4j.version>
+		<jsonpath.version>0.8.1</jsonpath.version>
+	    <jwt.version>0.9.0</jwt.version>
+		<jackson.version>2.9.7</jackson.version>
+		<jsonpath.version>0.8.1</jsonpath.version>
+		<org.apache.http.version>4.4.1</org.apache.http.version>
+		<org.apache.http.httpasyncclient.version>4.1</org.apache.http.httpasyncclient.version>
+		<apache.logging.log4j.version>2.16.0</apache.logging.log4j.version>
+		<org.springframework.version>5.1.4.RELEASE</org.springframework.version>
+		<org.springframework.boot.version>2.0.2.RELEASE</org.springframework.boot.version>
+        <org.springframework.security.version>5.1.3.RELEASE</org.springframework.security.version>
+        <org.springframework.hateoas.version>0.25.0.RELEASE</org.springframework.hateoas.version>
+		<commons-lang.version>2.6</commons-lang.version>
+		<commons-configuration.version>1.10</commons-configuration.version>
+		<commons-codec.version>1.9</commons-codec.version>
+		<org.json-json.version>20180813</org.json-json.version>
+		<org.projectlombok.version>1.18.4</org.projectlombok.version>
+		<org.apache.santuario-xmlsec.version>2.1.2</org.apache.santuario-xmlsec.version>
+		<org.apache.poi.version>4.1.1</org.apache.poi.version>
+		<org.apache.poi.commons-math3.version>3.6.1</org.apache.poi.commons-math3.version>
+		<com.jcraft.jsch.version>0.1.55</com.jcraft.jsch.version>
+<!--		<java-uuid-generator.version>3.1.4</java-uuid-generator.version>-->
+     </properties>
+
+<dependencyManagement>
+        <dependencies>
+		<!-- https://mvnrepository.com/artifact/javax/javaee-api -->
+		<dependency>
+		    <groupId>javax</groupId>
+		    <artifactId>javaee-api</artifactId>
+		    <version>8.0.1</version>
+		    <scope>provided</scope>
+		</dependency>        
+<!-- 		< ! - - https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api - - > -->
+<!-- 		<dependency> -->
+<!-- 		    <groupId>javax.servlet</groupId> -->
+<!-- 		    <artifactId>javax.servlet-api</artifactId> -->
+<!-- 		    <version>4.0.1</version> -->
+<!-- 		    <scope>${scope.variable}</scope> -->
+<!-- 		</dependency> -->
+<!-- 		< ! - - https://mvnrepository.com/artifact/javax.validation/validation-api - - > -->
+<!-- 		<dependency> -->
+<!-- 			<groupId>javax.validation</groupId> -->
+<!-- 			<artifactId>validation-api</artifactId> -->
+<!-- 			<version>2.0.1.Final</version> -->
+<!-- 			<scope>${scope.variable}</scope> -->
+<!-- 		</dependency> -->
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>${org.apache.http.version}</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>commons-logging</artifactId>
+					<groupId>commons-logging</groupId>
+				</exclusion>
+			</exclusions>
+			<scope>${scope.variable}</scope>            		    
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpmime -->
+		<dependency>
+		    <groupId>org.apache.httpcomponents</groupId>
+		    <artifactId>httpmime</artifactId>
+		    <version>${org.apache.http.version}</version>
+	        <exclusions>
+	            <exclusion>
+	                <artifactId>commons-logging</artifactId>
+	                <groupId>commons-logging</groupId>
+	            </exclusion>
+	        </exclusions>
+	        <scope>${scope.variable}</scope> 
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpasyncclient -->
+		<dependency>
+		    <groupId>org.apache.httpcomponents</groupId>
+		    <artifactId>httpasyncclient</artifactId>
+		    <version>${org.apache.http.httpasyncclient.version}</version>
+		    <exclusions>
+	            <exclusion>
+	                <artifactId>commons-logging</artifactId>
+	                <groupId>commons-logging</groupId>
+	            </exclusion>
+        	</exclusions>
+        	<scope>${scope.variable}</scope>
+		</dependency>			
+		<dependency>
+		    <groupId>org.slf4j</groupId>
+		    <artifactId>slf4j-api</artifactId>
+		    <version>${org.slf4j.version}</version>
+			<scope>${scope.variable}</scope>
+		</dependency>
+		<dependency> 
+		    <groupId>org.apache.logging.log4j</groupId> 
+		    <artifactId>log4j-slf4j-impl</artifactId> 
+		    <version>${apache.logging.log4j.version}</version> 
+			<scope>${scope.variable}</scope>
+		</dependency>
+		<dependency>
+		    <groupId>commons-configuration</groupId>
+		    <artifactId>commons-configuration</artifactId>
+		    <version>${commons-configuration.version}</version>
+	        <exclusions>
+	            <exclusion>
+	                <artifactId>commons-logging</artifactId>
+	                <groupId>commons-logging</groupId>
+	            </exclusion>
+	        </exclusions>
+	        <scope>${scope.variable}</scope>
+		</dependency>
+		<dependency>
+		    <groupId>org.apache.commons</groupId>
+		    <artifactId>commons-lang</artifactId>
+		    <version>2.6</version>
+		        <exclusions>
+		            <exclusion>
+		                <artifactId>commons-logging</artifactId>
+		                <groupId>commons-logging</groupId>
+		            </exclusion>
+		        </exclusions>
+		        <scope>${scope.variable}</scope>
+		</dependency>
+    	<dependency>
+    		<groupId>org.springframework</groupId>
+    		<artifactId>spring-core</artifactId>
+    		<version>${org.springframework.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>commons-logging</artifactId>
+                    <groupId>commons-logging</groupId>
+                </exclusion>
+            </exclusions>
+            <scope>${scope.variable}</scope>
+    	</dependency>	
+  	<dependency>
+  		<groupId>org.springframework</groupId>
+  		<artifactId>spring-context</artifactId>
+  		<version>${org.springframework.version}</version>
+		<exclusions>
+			<!-- Exclude Commons Logging in favor of Log4j -->
+			<exclusion>
+				<groupId>commons-logging</groupId>
+				<artifactId>commons-logging</artifactId>
+			</exclusion>
+		</exclusions>
+		<scope>${scope.variable}</scope>
+	</dependency>
+   	<dependency>
+   		<groupId>org.springframework</groupId>
+   		<artifactId>spring-web</artifactId>
+   		<version>${org.springframework.version}</version>
+   		<scope>${scope.variable}</scope>
+   	</dependency>
+  		<dependency>
+		<groupId>org.springframework</groupId>
+		<artifactId>spring-webmvc</artifactId>
+		<version>${org.springframework.version}</version>
+		<scope>${scope.variable}</scope>
+	</dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+            <version>${org.springframework.version}</version>
+            <scope>${scope.variable}</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-tx</artifactId>
+            <version>${org.springframework.version}</version>
+            <scope>${scope.variable}</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-expression</artifactId>
+            <version>${org.springframework.version}</version>
+            <scope>${scope.variable}</scope>
+        </dependency>	
+		<!-- https://mvnrepository.com/artifact/org.springframework/spring-jdbc -->
+		<dependency>
+		    <groupId>org.springframework</groupId>
+		    <artifactId>spring-jdbc</artifactId>
+		    <version>${org.springframework.version}</version>
+		    <scope>${scope.variable}</scope>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.springframework/spring-jms -->
+		<dependency>
+		    <groupId>org.springframework</groupId>
+		    <artifactId>spring-jms</artifactId>
+		    <version>${org.springframework.version}</version>
+		    <scope>${scope.variable}</scope>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.springframework/spring-messaging -->
+		<dependency>
+		    <groupId>org.springframework</groupId>
+		    <artifactId>spring-messaging</artifactId>
+		    <version>${org.springframework.version}</version>
+		    <scope>${scope.variable}</scope>
+		</dependency>		
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-core</artifactId>
+			<version>${org.springframework.security.version}</version>
+			<scope>${scope.variable}</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-web</artifactId>
+			<version>${org.springframework.security.version}</version>
+			<scope>${scope.variable}</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-config</artifactId>
+			<version>${org.springframework.security.version}</version>
+			<scope>${scope.variable}</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-ldap</artifactId>
+			<version>${org.springframework.security.version}</version>
+			<scope>${scope.variable}</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+			<version>${jackson.version}</version>
+			<scope>${scope.variable}</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>${jackson.version}</version>
+			<scope>${scope.variable}</scope>
+		</dependency>
+		<dependency>
+	        <groupId>com.fasterxml.jackson.datatype</groupId>
+	        <artifactId>jackson-datatype-jsr310</artifactId>
+	        <version>${jackson.version}</version>
+	        <scope>${scope.variable}</scope>
+		</dependency>
+		<dependency>
+        	<groupId>com.fasterxml.uuid</groupId>
+       	 	<artifactId>java-uuid-generator</artifactId>
+       	 	<version>3.1.4</version>
+<!--       	 	<version>${java-uuid-generator.version}</version>-->
+       	 	<scope>${scope.variable}</scope>
+    	</dependency>
+		<dependency>
+		  <groupId>io.jsonwebtoken</groupId>
+		  <artifactId>jjwt</artifactId>
+		  <version>${jwt.version}</version>
+		  <scope>${scope.variable}</scope>
+		</dependency>
+		<dependency>
+		    <groupId>org.json</groupId>
+		    <artifactId>json</artifactId>
+		    <version>${org.json-json.version}</version>
+		    <scope>${scope.variable}</scope>
+		</dependency>
+		   <dependency>
+		     <groupId>org.projectlombok</groupId>
+		     <artifactId>lombok</artifactId>
+		     <version>${org.projectlombok.version}</version>
+		     <scope>${scope.variable}</scope>
+		</dependency>
+		<dependency>
+		    <groupId>org.apache.santuario</groupId>
+		    <artifactId>xmlsec</artifactId>
+		    <version>${org.apache.santuario-xmlsec.version}</version>
+		    <scope>${scope.variable}</scope>
+		</dependency>		
+		<!-- https://mvnrepository.com/artifact/org.apache.poi/poi -->
+		<dependency>
+		    <groupId>org.apache.poi</groupId>
+		    <artifactId>poi</artifactId>
+		    <version>${org.apache.poi.version}</version>
+		    <scope>${scope.variable}</scope>		    
+			<exclusions>
+				<exclusion>
+					<artifactId>commons-logging</artifactId>
+					<groupId>commons-logging</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-math3 -->
+		<dependency>
+		    <groupId>org.apache.commons</groupId>
+		    <artifactId>commons-math3</artifactId>
+		    <version>${org.apache.poi.commons-math3.version}</version>
+		    <scope>${scope.variable}</scope>
+			<exclusions>
+				<exclusion>
+					<artifactId>commons-logging</artifactId>
+					<groupId>commons-logging</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
+		<dependency>
+		    <groupId>commons-codec</groupId>
+		    <artifactId>commons-codec</artifactId>
+		    <version>${commons-codec.version}</version>
+		    <scope>${scope.variable}</scope>
+			<exclusions>
+				<exclusion>
+					<artifactId>commons-logging</artifactId>
+					<groupId>commons-logging</groupId>
+				</exclusion>
+			</exclusions>		    
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.jcraft/jsch -->
+		<!--  sftp -->
+		<dependency>
+		    <groupId>com.jcraft</groupId>
+		    <artifactId>jsch</artifactId>
+		    <version>${com.jcraft.jsch.version}</version>
+		</dependency>
+	</dependencies>
+</dependencyManagement>
+
+    <!-- Activate the JBoss Enterprise Maven Repository.
+
+        NOTE: Configuring the Maven repository in the pom.xml file is not a recommended procedure
+        and is only done here to make it easier to use the quickstarts.
+
+        For more information about how to configure Maven for your application,
+        see the section entitled 'Use the Maven Repository'
+        in the Development Guide for Red Hat JBoss Enterprise Application Platform located here:
+
+        https://access.redhat.com/documentation/en/red-hat-jboss-enterprise-application-platform/
+    -->
+    <build>
+        <!-- Set the name of the WAR, used as the context root when the app is deployed. -->
+        <finalName>${project.artifactId}</finalName>
+    </build>
+
+</project>

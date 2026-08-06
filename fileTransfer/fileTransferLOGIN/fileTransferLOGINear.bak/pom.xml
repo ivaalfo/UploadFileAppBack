@@ -1,0 +1,201 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+ 	<parent>
+		<groupId>eus.martico</groupId>
+		<artifactId>fileTransfer-parent</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+<!-- 		<relativePath>../../pom.xml</relativePath> -->
+	</parent>
+  <artifactId>fileTransferLOGINear</artifactId>
+  <packaging>ear</packaging>
+  <name>fileTransferLOGINear</name>
+  <description>fileTransferLOGINear descripcion</description>
+  <properties>
+  		<scope.variable>provided</scope.variable>
+  		<org.apache.axis.version>1.2.1</org.apache.axis.version>
+  		<org.apache.commons.discovery.version>0.2</org.apache.commons.discovery.version>
+  		<org.apache.commons.httpclient.version>3.0.1</org.apache.commons.httpclient.version>
+  		<axis.saaj.version>1.2.1</axis.saaj.version>
+  </properties>    
+  <dependencies> 
+		<!-- https://mvnrepository.com/artifact/javax/javaee-api -->
+		<dependency>
+		    <groupId>javax</groupId>
+		    <artifactId>javaee-api</artifactId>
+		    <scope>provided</scope>
+		</dependency>  
+		<!-- https://mvnrepository.com/artifact/javax.activation/activation -->
+		<dependency>
+		    <groupId>javax.activation</groupId>
+		    <artifactId>activation</artifactId>
+		    <version>1.1.1</version>
+		    <scope>provided</scope>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/javax.mail/mail -->
+		<dependency>
+		    <groupId>javax.mail</groupId>
+		    <artifactId>mail</artifactId>
+		    <version>1.5.0-b01</version>
+		    <scope>provided</scope>
+		</dependency>
+<!--     	<dependency> -->
+<!--     		<groupId>org.springframework</groupId> -->
+<!--     		<artifactId>spring-core</artifactId> -->
+<!--             <scope>${scope.variable}</scope> -->
+<!--     	</dependency> -->
+    	<dependency>
+    		<groupId>org.springframework</groupId>
+    		<artifactId>spring-web</artifactId>
+    		<scope>${scope.variable}</scope>
+    	</dependency>
+   		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<scope>${scope.variable}</scope>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.springframework/spring-jdbc -->
+		<dependency>
+		    <groupId>org.springframework</groupId>
+		    <artifactId>spring-jdbc</artifactId>
+		    <scope>${scope.variable}</scope>
+		</dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-expression</artifactId>
+            <scope>${scope.variable}</scope>
+        </dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-core</artifactId>
+			<scope>${scope.variable}</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-web</artifactId>
+			<scope>${scope.variable}</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-config</artifactId>
+			<scope>${scope.variable}</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-ldap</artifactId>
+			<scope>${scope.variable}</scope>
+		</dependency> 
+<!-- 	    <dependency> -->
+<!-- 	      <groupId>axis</groupId> -->
+<!-- 	      <artifactId>axis</artifactId> -->
+<!-- 	      <scope>${scope.variable}</scope> -->
+<!-- 	      <version>${org.apache.axis.version}</version> -->
+<!-- 	      <exclusions> -->
+<!-- 	      	<exclusion> -->
+<!-- 	      		<groupId>javax.mail</groupId> -->
+<!-- 	      		<artifactId>mail</artifactId> -->
+<!-- 	      	</exclusion> -->
+<!-- 	      	<exclusion> -->
+<!-- 	      		<groupId>javax.activation</groupId> -->
+<!-- 	      		<artifactId>activation</artifactId> -->
+<!-- 	      	</exclusion> -->
+<!-- 	      	<exclusion> -->
+<!-- 	      		<groupId>commons-logging</groupId> -->
+<!-- 	      		<artifactId>commons-logging</artifactId> -->
+<!-- 	      	</exclusion> -->
+<!-- 	      </exclusions>	       -->
+<!-- 	    </dependency> -->
+<!-- 	    <dependency> -->
+<!-- 	      <groupId>commons-discovery</groupId> -->
+<!-- 	      <artifactId>commons-discovery</artifactId> -->
+<!-- 	      <scope>${scope.variable}</scope> -->
+<!-- 	      <version>${org.apache.commons.discovery.version}</version> -->
+<!-- 	    </dependency> -->
+<!-- 	    <dependency> -->
+<!-- 	      <groupId>commons-httpclient</groupId> -->
+<!-- 	      <artifactId>commons-httpclient</artifactId> -->
+<!-- 	      <scope>${scope.variable}</scope> -->
+<!-- 	      <version>${org.apache.commons.httpclient.version}</version> -->
+<!-- 	    </dependency> -->
+	    <dependency>
+	      <groupId>commons-configuration</groupId>
+	      <artifactId>commons-configuration</artifactId>
+	      <scope>${scope.variable}</scope>
+	    </dependency>
+<!-- 	    <dependency> -->
+<!-- 	      <groupId>axis</groupId> -->
+<!-- 	      <artifactId>axis-saaj</artifactId> -->
+<!-- 	      <scope>${scope.variable}</scope> -->
+<!-- 	      <version>${axis.saaj.version}</version> -->
+<!-- 	    </dependency> -->
+	    <dependency>
+	      <groupId>org.projectlombok</groupId>
+	      <artifactId>lombok</artifactId>
+	      <scope>${scope.variable}</scope>
+	    </dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+		</dependency>
+		<dependency>
+	        <groupId>com.fasterxml.jackson.datatype</groupId>
+	        <artifactId>jackson-datatype-jsr310</artifactId>
+	        <scope>${scope.variable}</scope>
+		</dependency>		
+		<dependency>
+		  <groupId>io.jsonwebtoken</groupId>
+		  <artifactId>jjwt</artifactId>
+		</dependency>
+		<dependency>
+		    <groupId>org.json</groupId>
+		    <artifactId>json</artifactId>
+		    <scope>${scope.variable}</scope>
+		</dependency>
+		<dependency>
+		    <groupId>org.slf4j</groupId>
+		    <artifactId>slf4j-api</artifactId>
+			<scope>${scope.variable}</scope>
+		</dependency>
+		<dependency> 
+		    <groupId>org.apache.logging.log4j</groupId> 
+		    <artifactId>log4j-slf4j-impl</artifactId> 
+			<scope>${scope.variable}</scope>
+		</dependency>		
+	    <dependency>
+	      <groupId>eus.martico</groupId>
+	      <artifactId>fileTransferLOGINwar</artifactId>
+	      <version>0.0.1-SNAPSHOT</version>
+	      <type>war</type>
+	    </dependency>
+	    <dependency>
+	    	<groupId>eus.martico</groupId>
+	    	<artifactId>fileTransferJAR</artifactId>
+	    	<version>0.0.1-SNAPSHOT</version>
+	    </dependency>
+	    <dependency>
+	    	<groupId>eus.martico</groupId>
+	    	<artifactId>fileTransferSEGjar</artifactId>
+	    	<version>0.0.1-SNAPSHOT</version>
+	    </dependency>
+  </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-ear-plugin</artifactId>
+        <version>3.0.1</version>
+        <configuration>
+          <earSourceDirectory>EarContent</earSourceDirectory>
+          <generateApplicationXml>false</generateApplicationXml>
+          <version>7</version>
+          <defaultLibBundleDir>lib</defaultLibBundleDir>
+          <modules>
+             <webModule>
+               <groupId>eus.martico</groupId>
+               <artifactId>fileTransferLOGINwar</artifactId>
+               <contextRoot>/fileTransferLOGIN</contextRoot>
+             </webModule>
+          </modules>          
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
