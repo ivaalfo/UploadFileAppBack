@@ -152,7 +152,7 @@ public class FileSystemCertSignService {
 			String entorno = FileTransferConfiguration.getProperty(FileTransferConstantes.CERT_ENV);
 
 			//4.CONTROL DE ENTORNOS DINÁMICO
-			if("PROD".equalsIgnoreCase(entorno)) {
+			if("PROD".equalsIgnoreCase(entorno)) {		//NO_SE_USA
 				//Configuración para PRODUCCIÓN (Sello de Tiempo Legal)
 				parameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_T);
 
