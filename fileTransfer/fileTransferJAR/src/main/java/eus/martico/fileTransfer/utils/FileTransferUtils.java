@@ -1,5 +1,6 @@
 package eus.martico.fileTransfer.utils;
 
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -12,6 +13,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import javax.imageio.ImageIO;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
@@ -504,6 +507,9 @@ public class FileTransferUtils {
 				logger.error("Tipo MIME no permitido para " + tipoDoc + ": " + incomingMimeType);
 				throw new PedidoFilesException("El formato del archivo no está permitido para este documento.");
 			}
+			
+			//Si el tipo es permitido, verificamos que no esté dañado internamente
+			comprobarArchivoDañado(_file, incomingMimeType.toLowerCase());
 		}
 	}
 	
@@ -516,8 +522,7 @@ public class FileTransferUtils {
 	 * @throws PedidoFilesException
 	 * @throws IOException
 	 */
-	public static byte[] convertirImagenApdf(byte[] datosImagen, String extension) 
-			throws PedidoFilesException, IOException {
+	public static byte[] convertirImagenApdf(byte[] datosImagen, String extension) throws PedidoFilesException, IOException {
 		try (PDDocument doc = new PDDocument()) {
 			PDPage page = new PDPage();
 			doc.addPage(page);
@@ -560,5 +565,42 @@ public class FileTransferUtils {
 		}
 	}
 	
+	private static void comprobarArchivoDañado(MultipartFile _file, String mimeType) throws PedidoFilesException {
+	    if (_file.isEmpty()) {
+	        throw new PedidoFilesException("El archivo seleccionado está vacío o corrupto.");
+	    }
+
+	    try (InputStream is = _file.getInputStream()) {
+	        if ("application/pdf".equals(mimeType)) {
+	            //Validar PDF con PDFBox
+	            try (PDDocument document = PDDocument.load(is)) {
+	                //Si tiene 0 páginas o está estructuralmente roto
+	                if (document.getNumberOfPages() == 0) {
+	                    throw new PedidoFilesException("El archivo PDF está dañado (no contiene páginas válidas).");
+	                }
+	            } catch (Exception e) {
+	                logger.error("PDF corrupto detectado: " + e.getMessage());
+	                throw new PedidoFilesException("El archivo PDF parece estar dañado y no se puede abrir.");
+	            }
+	        } else if (mimeType.startsWith("image/")) {
+	            //Validar Imágenes (jpg, jpeg, png, tiff) con ImageIO
+	            try {
+	                BufferedImage image = ImageIO.read(is);
+	                if (image == null) {
+	                	//Si ImageIO null, no pudo parsear los bytes de la imagen (está corrupta)
+	                    throw new PedidoFilesException("La imagen seleccionada está dañada o su formato es ilegible.");
+	                }
+	                //Forzar lectura de dimensiones para asegurar que los bytes internos son legibles
+	                image.getWidth(); 
+	            } catch (Exception e) {
+	                logger.error("Imagen corrupta detectada en anti-malware: " + e.getMessage());
+	                throw new PedidoFilesException("La imagen está dañada y no se puede procesar.");
+	            }
+	        }
+	    } catch (IOException e) {
+	    	logger.error("Error de E/S al validar estructura: " + e.getMessage());
+	        throw new PedidoFilesException("Error al leer el contenido del archivo.");
+	    }
+	}
 
 }

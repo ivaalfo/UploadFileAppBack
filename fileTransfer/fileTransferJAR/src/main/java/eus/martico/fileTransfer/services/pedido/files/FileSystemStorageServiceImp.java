@@ -281,6 +281,19 @@ public class FileSystemStorageServiceImp implements FileSystemStorageIService {
 		logger.info("{} :: Subida de documentacion :: TR:{} : EXP:{}", _context.getUsername(), _track, _exp);
 		
 		ValidateDTO<PedidoFilesVO> validate = new ValidateDTO<PedidoFilesVO>();
+		
+		//PRE-VALIDACIÓN: Sin CMR los demás no pasan
+	    if(_cmrFile.length > 0){
+	        try {
+	            String newFname = StringUtils.cleanPath(_cmrFile[0].getOriginalFilename());
+	            FileTransferUtils.validacionAntiMalware(_context, _cmrFile[0], newFname, "CMR");
+	        } catch (PedidoFilesException e) {
+	            logger.error("Error de integridad de archivo CMR: " + e.getMessage());
+	            validate.addError(new ErrorVO(_track, "Error de integridad de archivo CMR: " + e.getMessage()));
+	            return validate;
+	        }
+	    }
+		
 		if(_cmrFile.length > 0){
 			logger.info("Registar CMR :: TR:{} :: EXP:{}", _track, _exp);
 			validate = this.registrarCMR(_context, _cmrFile, pedidoReg, validate, _refCarga);
@@ -430,13 +443,10 @@ public class FileSystemStorageServiceImp implements FileSystemStorageIService {
 				Path newPathCMR = FileTransferUtils.getPath("CMR", _refCarga, newFname);
 				//Se cambia CMR_track por CMR_track_refCarga para el name del DOC y las rutas
 				
-				//Validación Archivos Maliciosos
-				FileTransferUtils.validacionAntiMalware(_context, _cmrFile[0], newFname, "CMR");
-
 				//SAVE CMR en ./subidos
 				FileTransferUtils.storeFile(newPathCMR, _cmrFile[0]);
 				logger.info("registrarCMR :: CMR almacenado");
-			
+
 				//OPERACIONES DDBB ::
 				PedidoFilesVO pedidoAux = new PedidoFilesVO();
 				pedidoAux.setRefPed(track);
@@ -446,22 +456,22 @@ public class FileSystemStorageServiceImp implements FileSystemStorageIService {
 				pedidoAux.setUsuSubidaCMR(_context.getUsername());
 				pedidoAux.setEstadoCMR(FileTransferConstantes.ESTADO_1_FICH_SUBIDO);
 				pedidoAux.setFechaSubidaCMR(LocalDateTime.now());
-				
+
 				//Inicializamos el motRec y anota por si viene de rechazo
 				pedidoAux.setAnotaciones(FileTransferConstantes.SIN_ANOTACIONES);
 				pedidoAux.setMotivoRechazo("");
-				
+
 				pedidoAux.setFechaEstadoCMR(LocalDateTime.parse("0000-01-01T00:00:00"));
 				pedidoAux.setUsuOkCMR("");
-			
+
 				//UPDATE Solo los campos del CMR
 				PedidoFilesVO pedidoUpdate = new PedidoFilesVO();
 				pedidoUpdate = pedidoFilesDAO.updateCMR(pedidoAux);
 				logger.info("registrarCMR :: CMR registrado :: TR:{} :: EXP:{}", track, exp);
-				
+
 				pedidoUpdate = pedidoFilesDAO.getPedidoFiles(track, exp);
 				_validate.setDatos(pedidoUpdate);
-				
+
 				Integer estado = FileTransferUtils.determinarEstadoGeneral(pedidoUpdate, track, exp);
 				pedidoFilesDAO.updateESTADO(track, exp, estado);
 				logger.info("registrarCMR :: Actualizado Estado General :: TR:{}", track);
@@ -515,8 +525,15 @@ public class FileSystemStorageServiceImp implements FileSystemStorageIService {
 				//Nueva FAC se guarda siempre en 'CURRENT_YEAR' venga de rechazo o no
 				Path pathFAC = FileTransferUtils.getPath("FAC", trackExp, fileName);
 				
-				//Validación Archivos Maliciosos
-				FileTransferUtils.validacionAntiMalware(_context, _facFile[0], fileName, "FAC");
+				//Validación Archivos Maliciosos y Estructurales
+				try {
+					FileTransferUtils.validacionAntiMalware(_context, _facFile[0], fileName, "FAC");
+				} catch (PedidoFilesException ex){
+				    logger.error("Error de integridad de archivo FAC: " + ex.getMessage());
+				    _validate.addError(new ErrorVO(track, "Error de integridad de archivo Factura: "+ex.getMessage())); 
+				    //Devolvemos el validate con el error integrado sin romper la ejecución de los otros archivos (CMR/OTROS)
+				    return _validate;
+				}
 				
 				//SAVE FAC :: Para fileTransfer
 				FileTransferUtils.storeFile(pathFAC, _facFile[0]);
@@ -602,10 +619,17 @@ public class FileSystemStorageServiceImp implements FileSystemStorageIService {
 					//Nuevos OTRs se guardan siempre en 'CURRENT_YEAR'
 					Path pathOTR = FileTransferUtils.getPath("OTR", trackExp, completeFname);
 					
-					//Validación Archivos Maliciosos
-					FileTransferUtils.validacionAntiMalware(_context, OTR_filesToSend[i], completeFname, "OTR");
+					//Validación Archivos Maliciosos y Estructurales
+					try {
+						FileTransferUtils.validacionAntiMalware(_context, OTR_filesToSend[i], completeFname, "OTR");
+					} catch (PedidoFilesException ex){
+					    logger.error("Error de integridad de archivo OTR: " + ex.getMessage());
+					    _validate.addError(new ErrorVO(track, "Error de integridad de archivo Otros: "+ex.getMessage())); 
+					    //Devolvemos el validate con el error integrado sin romper la ejecución de los otros archivos (CMR/FAC)
+					    return _validate;
+					}
 					
-					//SAVE OTRs :: de momento no se hace nada con ellos, solo guardarlos
+					//SAVE OTRs :: no se hace nada con ellos, solo guardarlos
 					//No hace falta ni validarlos, ni rechazarlos, ni conversiones
 					FileTransferUtils.storeFile(pathOTR, OTR_filesToSend[i]);
 					logger.info("registrarOTR :: TR:{} :: EXP:{} :: OTR almacenado.", track, exp);
