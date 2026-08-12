@@ -19,6 +19,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import eus.martico.fileTransfer.control.MyControlUtils;
 import eus.martico.fileTransfer.dao.pedido.files.PedidoFilesException;
+import eus.martico.fileTransfer.model.pedido.proveedor.PedidoGrupajeFechasVO;
 import eus.martico.fileTransfer.model.pedido.proveedor.PedidoGrupajeVO;
 import eus.martico.fileTransfer.model.pedido.proveedor.PedidoProveedorVO;
 import eus.martico.fileTransfer.model.vo.BuscarDTO;
@@ -44,52 +45,65 @@ public class PedidosActivosControllerV1 extends PedidosActivosServiceImp {
 	
 	
 	@RequestMapping(method = RequestMethod.GET, path="/getPedidoProv/{track}/{exp}")
-	public @ResponseBody()
-	BuscarDTO<PedidoProveedorVO> getPedido(@AuthenticationPrincipal final SegurUser user,
+	public @ResponseBody() BuscarDTO<PedidoProveedorVO> getPedido(
+			@AuthenticationPrincipal final SegurUser user,
 			@PathVariable(required=true) String track,
-			@PathVariable(required=true) String exp) 
-					throws PedidosActivosServiceException, PedidoFilesException {
+			@PathVariable(required=true) String exp) throws PedidosActivosServiceException, PedidoFilesException {
+		
 		MyServiceContext context = MyControlUtils.getServiceContext(user);
 		return new BuscarDTO<PedidoProveedorVO>(pedidosActivosService.getPedidoProv(context, track, exp));
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, path="/getGrupaje/{track}")
-	public @ResponseBody()
-	PedidoGrupajeVO getGrupaje(@AuthenticationPrincipal final SegurUser _user,
-			@PathVariable(required=true) String track) 
-					throws PedidoFilesException {
+	public @ResponseBody() PedidoGrupajeVO getGrupaje(
+			@AuthenticationPrincipal final SegurUser _user,
+			@PathVariable(required=true) String track) throws PedidoFilesException {
+		
 		MyServiceContext context = MyControlUtils.getServiceContext(_user);
 		return pedidosActivosService.getGrupaje(context, track);
 	}
 	
 	@RequestMapping(method = RequestMethod.PUT, path="/putGrupaje/{grupTR}")
-	public @ResponseBody()
-	Integer setGrupaje(@AuthenticationPrincipal final SegurUser _user,
+	public @ResponseBody() Integer setGrupaje(
+			@AuthenticationPrincipal final SegurUser _user,
 			@PathVariable(required=true) String grupTR,
-			@RequestBody PedidoGrupajeVO pedidoGrup) 
-					throws PedidoFilesException {
+			@RequestBody PedidoGrupajeVO pedidoGrup) throws PedidoFilesException {
+		
 		MyServiceContext context = MyControlUtils.getServiceContext(_user);
-		return pedidosActivosService.setGrupaje(context, grupTR, pedidoGrup.seleccionados);
+		return pedidosActivosService.setGrupaje(context, grupTR, pedidoGrup.arrayGrulog);
 	}
 	
 	@RequestMapping(method = RequestMethod.PUT, path="/putFecReal/{track}/{exp}/{fechaEntReal}")
-	public @ResponseBody()
-	Integer setFecReal(@AuthenticationPrincipal final SegurUser _user,
+	public @ResponseBody() Integer setFecReal(
+			@AuthenticationPrincipal final SegurUser _user,
 			@PathVariable(required=true) String track,
 			@PathVariable(required=true) String exp,
-			@PathVariable(required=true) String fechaEntReal) 
-					throws PedidoFilesException {
+			@PathVariable(required=true) String fechaEntReal) throws PedidoFilesException {
+
 		MyServiceContext context = MyControlUtils.getServiceContext(_user);
 		return pedidosActivosService.setFecReal(context, track, exp, fechaEntReal);
 	}
 	
+	@RequestMapping(method = RequestMethod.PUT, path="/putFecRealMultiple")
+	public @ResponseBody() Integer seFecRealGrup(
+			@AuthenticationPrincipal final SegurUser _user,
+			@RequestBody PedidoGrupajeFechasVO request) throws PedidoFilesException {
+		
+		MyServiceContext context = MyControlUtils.getServiceContext(_user);
+		int totalProcesados = 0;
+		for(PedidoGrupajeFechasVO.FechaItem item : request.arrayFechas){
+			totalProcesados += pedidosActivosService.setFecReal(context, item.track, item.expediente, item.fechaEntReal);
+		}
+		return totalProcesados;
+	}
+	
 	@RequestMapping(method = RequestMethod.PUT, path="/anularPedido/{track}/{exp}")
-	public @ResponseBody()
-	Integer setPedidoNulo(@AuthenticationPrincipal final SegurUser _user,
+	public @ResponseBody() Integer setPedidoNulo(
+			@AuthenticationPrincipal final SegurUser _user,
 			@PathVariable(required=true) String track,
 			@PathVariable(required=true) String exp,
-			@RequestBody String motivo) 
-					throws PedidoFilesException{
+			@RequestBody String motivo) throws PedidoFilesException {
+		
 		MyServiceContext context = MyControlUtils.getServiceContext(_user);
 		if (motivo != null && motivo.trim().startsWith("{")) {
 		    try {
@@ -115,8 +129,8 @@ public class PedidosActivosControllerV1 extends PedidosActivosServiceImp {
 			@RequestParam(required=false) String expediente,
 			@RequestParam(required=false) String provName,
 			@RequestParam(required=false) String trFilterValue,
-			@RequestParam(required=false) String refCharge)
-					throws PedidosActivosServiceException, PedidoFilesException {
+			@RequestParam(required=false) String refCharge)	throws PedidosActivosServiceException, PedidoFilesException {
+		
 		MyServiceContext context = MyControlUtils.getServiceContext(user);
 		return pedidosActivosService.getPedidosFiltrados(context, expediente, provName, trFilterValue, refCharge);
 	}

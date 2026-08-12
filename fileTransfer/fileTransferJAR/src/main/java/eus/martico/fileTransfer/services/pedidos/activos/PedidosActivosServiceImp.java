@@ -41,6 +41,7 @@ public class PedidosActivosServiceImp implements PedidosActivosIService {
 	
 	
 	/**
+	 * getPedidoProv
 	 * 
 	 * @param _context
 	 * @param _pedidoTrack
@@ -60,6 +61,7 @@ public class PedidosActivosServiceImp implements PedidosActivosIService {
 	}
 	
 	/**
+	 * getGrupaje
 	 * 
 	 * @param _context
 	 * @param _track
@@ -76,6 +78,7 @@ public class PedidosActivosServiceImp implements PedidosActivosIService {
 	}
 
 	/**
+	 * setGrupaje
 	 * 
 	 * @param _context
 	 * @param _grupTR
@@ -127,6 +130,7 @@ public class PedidosActivosServiceImp implements PedidosActivosIService {
 	}
 	
 	/**
+	 * setFecReal
 	 * 
 	 * @param _context
 	 * @param _pedidoTrack
@@ -170,6 +174,7 @@ public class PedidosActivosServiceImp implements PedidosActivosIService {
 	
 	/**
 	 * setPedidoNulo
+	 * 
 	 * @param _context MyServiceContext
 	 * @param _pedidoTrack String
 	 * @param _pedidoExp String
@@ -186,7 +191,7 @@ public class PedidosActivosServiceImp implements PedidosActivosIService {
 				PedidoGrupajeVO grupo = getGrupaje(_context, _pedidoTrack);
 				if(grupo.getSeleccionados() != null){
 					//si gru por cada pedido del grupo
-					for(GrupajeItem pGR : grupo.seleccionados){
+					for(GrupajeItem pGR : grupo.arrayGrulog){
 						String completeTR = grupo.grupTR.concat(pGR.grupNum);
 						String realGruExp = pGR.expediente;
 						pedidosActivosDAO.anularPedido(_context, completeTR, realGruExp, _motivo);

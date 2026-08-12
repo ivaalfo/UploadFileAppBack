@@ -432,6 +432,8 @@ public class FileSystemStorageServiceImp implements FileSystemStorageIService {
     		
 			if(!cmrToValid && !cmrValid){//Pasan los 0s o los 3s
 				
+				_refCarga = _refCarga.replaceAll("[\\\\/.%,';&]", "-");
+				
 				if(track.startsWith("GRU")){
 					String gruTR = track.replaceAll("GRULOG", "-GRU");
 					_refCarga = _refCarga.concat(gruTR);

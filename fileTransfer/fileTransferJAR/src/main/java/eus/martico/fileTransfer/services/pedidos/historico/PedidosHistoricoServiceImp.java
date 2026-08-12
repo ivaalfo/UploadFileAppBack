@@ -40,7 +40,7 @@ public class PedidosHistoricoServiceImp implements PedidosHistoricoIService {
 				PedidoGrupajeVO grupo = getGrupaje(_context, _pedidoTrack);
 				if(grupo.getSeleccionados() != null){
 					//si gru por cada pedido del grupo
-					for(GrupajeItem pGR : grupo.seleccionados){
+					for(GrupajeItem pGR : grupo.arrayGrulog){
 						String completeTR = grupo.grupTR.concat(pGR.grupNum);
 						String realGruExp = pGR.expediente;
 						pedidoHistoricoDAO.reactivarPedido(_context, completeTR, realGruExp);

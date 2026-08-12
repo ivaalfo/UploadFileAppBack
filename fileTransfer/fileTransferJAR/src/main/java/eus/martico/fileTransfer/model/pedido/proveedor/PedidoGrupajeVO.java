@@ -13,7 +13,7 @@ public class PedidoGrupajeVO {
 	//Clase personalizada para recibir el array de grupajes
 		
 	public String grupTR;
-	public List<GrupajeItem> seleccionados;
+	public List<GrupajeItem> arrayGrulog;
 
 	public static class GrupajeItem {
 		public String grupNum;
@@ -64,11 +64,11 @@ public class PedidoGrupajeVO {
 	}
 
 	public List<GrupajeItem> getSeleccionados() {
-		return seleccionados;
+		return arrayGrulog;
 	}
 
 	public void setSeleccionados(List<GrupajeItem> seleccionados) {
-		this.seleccionados = seleccionados;
+		this.arrayGrulog = seleccionados;
 	}
 	
 	

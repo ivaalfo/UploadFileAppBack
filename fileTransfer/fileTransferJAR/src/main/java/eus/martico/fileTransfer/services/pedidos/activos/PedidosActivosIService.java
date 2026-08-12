@@ -28,7 +28,7 @@ public interface PedidosActivosIService {
 	
 	Integer setFecReal(MyServiceContext _context, String _pedidoTrack, String _pedidoExp, String _fechaEntReal) 
 			throws PedidoFilesException;
-	
+		
 	Integer setPedidoNulo(MyServiceContext _context, String _pedidoTrack, String _pedidoExp, String _motivo) 
 			throws PedidoFilesException;
 	
