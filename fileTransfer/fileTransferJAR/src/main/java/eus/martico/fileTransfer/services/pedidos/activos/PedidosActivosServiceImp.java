@@ -40,25 +40,6 @@ public class PedidosActivosServiceImp implements PedidosActivosIService {
 	PedidoFilesIDAO pedidoFilesDAO;
 	
 	
-	/**
-	 * getPedidoProv
-	 * 
-	 * @param _context
-	 * @param _pedidoTrack
-	 * @param _pedidoExp
-	 * @return
-	 * @throws PedidosActivosServiceException
-	 * @throws PedidoFilesException
-	 */
-	@Override
-	public PedidoProveedorVO getPedidoProv(MyServiceContext _context, String _pedidoTrack, String _pedidoExp) 
-			throws PedidosActivosServiceException, PedidoFilesException {
-		try {
-			return pedidosActivosDAO.getPedidoProv(_context, _pedidoTrack, _pedidoExp);
-		} catch (PedidosActivosException e) {
-			throw new PedidosActivosServiceException(e.getMessage());
-		}
-	}
 	
 	/**
 	 * getGrupaje

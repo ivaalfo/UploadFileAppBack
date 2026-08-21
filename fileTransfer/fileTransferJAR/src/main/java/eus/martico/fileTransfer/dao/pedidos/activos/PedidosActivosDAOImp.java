@@ -51,7 +51,7 @@ public class PedidosActivosDAOImp extends BaseGenDAO<PedidoProveedorVO> implemen
 	UsuarioIDAO usuarioDAO;	
 	
 	
-	private static StringBuilder sqlSelectPedidoByTrAndExp;
+	
 	private static StringBuilder sqlInsertFTarchi;
 	private static StringBuilder sqlUpdateFecREAL;
 	
@@ -77,14 +77,6 @@ public class PedidosActivosDAOImp extends BaseGenDAO<PedidoProveedorVO> implemen
 			);
 
 	static {
-		sqlSelectPedidoByTrAndExp = new StringBuilder("SELECT distinct * FROM ");
-		sqlSelectPedidoByTrAndExp.append(PedidoProveedorDAOImpCons.BD_VISTA_FCTPDNPRV);
-		sqlSelectPedidoByTrAndExp.append(" WHERE ");
-		sqlSelectPedidoByTrAndExp.append(" TRIM("+PedidoProveedorDAOImpCons.BD_FCTPDNPRV_TR+")");
-		sqlSelectPedidoByTrAndExp.append(" = ? ");
-		sqlSelectPedidoByTrAndExp.append(" AND ");
-		sqlSelectPedidoByTrAndExp.append(" TRIM("+PedidoProveedorDAOImpCons.BD_FCTPDNPRV_EXPEDIENTE+")");
-		sqlSelectPedidoByTrAndExp.append(" = ? ");
 		
 		List<String> camposInsert = new ArrayList<String>(Arrays.asList(
 				PedidoFilesDAOImpCons.BD_FTARCHI_REFPED,
@@ -123,28 +115,6 @@ public class PedidosActivosDAOImp extends BaseGenDAO<PedidoProveedorVO> implemen
 
 	}
 	
-	
-	@Override
-	public PedidoProveedorVO getPedidoProv(MyServiceContext _context, String _pedidoTrack, String _pedidoExp) 
-			throws PedidosActivosException, PedidoFilesException {
-		logger.info("getPedido: TR:{} :: EXP:{}", _pedidoTrack, _pedidoExp);
-		try {
-			String trimTR = _pedidoTrack.trim();
-			String trimEXP = _pedidoExp.trim();
-			List<PedidoProveedorVO> listPedidoProv = this.jdbcTemplate.query(sqlSelectPedidoByTrAndExp.toString(), new PedidoProveedorDAOImpMapper(), trimTR, trimEXP);
-			if(listPedidoProv.isEmpty()){
-				return null;
-			} else {
-				PedidoProveedorVO pProv = listPedidoProv.get(0);
-				PedidoFilesVO pFiles = pedidoFilesDAO.getPedidoFiles(pProv.getTrack(), pProv.getExpediente());
-				TratarDatosUtils.tratarMotRechazo(pProv, pFiles);
-				return pProv;
-			}
-		} catch (DataAccessException e) {
-			logger.error(e.getMessage());
-			throw new PedidosActivosException(DAOException.SQLERRCODE_QUERY, e.getMessage());
-		}
-	}
 	
 	@Override
 	public Integer insertFecREAL(final PedidoFilesVO _pedidoF) throws PedidoFilesException {

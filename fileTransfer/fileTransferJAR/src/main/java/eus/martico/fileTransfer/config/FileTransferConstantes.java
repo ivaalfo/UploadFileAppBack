@@ -63,6 +63,7 @@ public class FileTransferConstantes {
 	public static final String MAN_PROV_LOCATION		= "manual-dir";
 	
 	public static final String DIR_FAC_FILES_DOCPRO	 	= "fac-docpro-dir";
+	public static final String DIR_SALIDAS				= "salidas-dir";
 	
 	public static final String DIR_BASE 				= "filetransfer.base-dir";
 	public static final String DIR_BASE_CMR 			= "filetransfer.subfolder.cmr";
@@ -76,6 +77,10 @@ public class FileTransferConstantes {
 	//Vistas de la tabla de tablas
 	public static final String TT_AUTOR_ROLES		= "AUTOR_ROLES";
 	public static final String TT_TIPOS_BLOQUEOS	= "TIPO_BLOQUEO";
+	
+	//Codigos Bloqueos
+	public static final String BLOQ_VALIDADOR	= "VALIDADOR";
+	public static final String BLOQ_FIRMADOR	= "FIRMADOR";
 	
 	public static final byte ORDEN_ASCENDENTE = 1;
 	public static final byte ORDEN_DESCENDENTE = -1;
@@ -110,7 +115,7 @@ public class FileTransferConstantes {
 	public static final int ESTADO_1_FICH_SUBIDO 	= FileTransferConfiguration.getIntProperty("estado.fichero.subido");
 	public static final int ESTADO_2_FICH_VALIDADO	= FileTransferConfiguration.getIntProperty("estado.fichero.validado");
 	public static final int ESTADO_3_FICH_RECHAZADO	= FileTransferConfiguration.getIntProperty("estado.fichero.rechazado");
-//	//NO SE USA es un 2
+	//NO SE USA es un 2
 //	public static final int ESTADO_2_FAC_CONTABILIZADA = FileTransferConfiguration.getIntProperty("estado.factura.contabilizada");
 	public static final int ESTADO_4_FAC_BLOQUEADA			= FileTransferConfiguration.getIntProperty("estado.factura.bloqueada");
 	public static final int ESTADO_5_FAC_SIN_CONTABILIZAR 	= FileTransferConfiguration.getIntProperty("estado.factura.sin.contabilizar");
@@ -138,4 +143,11 @@ public class FileTransferConstantes {
 	public static final String CERT_TSA_USER 	= "filetransfer.certificados.tsa-user";
 	public static final String CERT_TSA_PASS 	= "filetransfer.certificados.tsa-pass";
 	
+	public static final int ESTADO_FIRMADO_A = FileTransferConfiguration.getIntProperty("estado.firmado.mart");
+	public static final int ESTADO_FIRMADO_B = FileTransferConfiguration.getIntProperty("estado.firmado.tras");
+	public static final int ESTADO_FIRMADO_C = FileTransferConfiguration.getIntProperty("estado.firmado.dest");
+	
+	
+	//TODO arreglar JndiLookup
+	//java.lang.NoClassDefFoundError: org/apache/logging/log4j/core/lookup/JndiLookup
 }

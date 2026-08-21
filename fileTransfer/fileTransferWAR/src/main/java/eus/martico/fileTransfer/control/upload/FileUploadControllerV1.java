@@ -27,6 +27,7 @@ import eus.martico.fileTransfer.dao.pedido.files.PedidoFilesException;
 import eus.martico.fileTransfer.model.bloqueo.BloqueoControlVO;
 import eus.martico.fileTransfer.model.error.vo.ErrorVO;
 import eus.martico.fileTransfer.model.pedido.files.PedidoFilesVO;
+import eus.martico.fileTransfer.model.pedido.proveedor.PedidoProveedorVO;
 import eus.martico.fileTransfer.model.vo.BuscarDTO;
 import eus.martico.fileTransfer.model.vo.ValidateDTO;
 import eus.martico.fileTransfer.seguridad.user.entity.SegurUser;
@@ -60,27 +61,37 @@ public class FileUploadControllerV1 {
 	
 	
 	
+	@RequestMapping(method = RequestMethod.GET, path="/getPedidoProv/{track}/{exp}")
+	public @ResponseBody() BuscarDTO<PedidoProveedorVO> getPedidoProv(
+			@AuthenticationPrincipal final SegurUser user,
+			@PathVariable(required=true) String track,
+			@PathVariable(required=true) String exp) 
+					throws PedidoFilesException {
+		
+		MyServiceContext context = MyControlUtils.getServiceContext(user);
+		return new BuscarDTO<PedidoProveedorVO>(storageService.getPedidoProv(context, track, exp));
+	}
+	
 	@RequestMapping(method = RequestMethod.GET, path="/getPedidoFilesVO/{track}/{exp}")
-	public @ResponseBody()
-	BuscarDTO<PedidoFilesVO> getPedidoFilesVO(
+	public @ResponseBody() BuscarDTO<PedidoFilesVO> getPedidoFilesVO(
 			@AuthenticationPrincipal final SegurUser user, 
 			@PathVariable(required=true) String track,
 			@PathVariable(required=true) String exp) 
 					throws PedidoFilesException {
+		
 		MyServiceContext context = MyControlUtils.getServiceContext(user);
 		return storageService.getPedidoFiles(context, track, exp);
 	}
 	
-	@RequestMapping(method = RequestMethod.GET, path="/getSIGN")
-	public @ResponseBody()
-	ResponseEntity<Resource> getSignFile(
+	@RequestMapping(method = RequestMethod.GET, path="/getWatermark")
+	public @ResponseBody() ResponseEntity<Resource> getSignWatermarkFile(
 			@AuthenticationPrincipal final SegurUser _user) {
 		
     	String signfilename = signFile;
 		MyServiceContext context = MyControlUtils.getServiceContext(_user);
-		logger.info("{} :: Obteniendo Firma :: {}", context.getUsername(), signfilename);
+		logger.info("{} :: Obteniendo Sello :: {}", context.getUsername(), signfilename);
 		
-		Resource file = storageService.loadSign(signfilename);
+		Resource file = storageService.loadSignWatermark(signfilename);
 		String fileExt = FileTransferUtils.getExt(signfilename);
 		MediaType MediaTypeValue = FileTransferUtils.getMediaType(fileExt);
 		
@@ -96,6 +107,7 @@ public class FileUploadControllerV1 {
 			@PathVariable String track,
 			@PathVariable String exp) 
 					throws PedidoFilesException {
+		
 		MyServiceContext context = MyControlUtils.getServiceContext(_user);
 		return storageService.loadCMRasResource(context, track, exp);
 	}
@@ -164,8 +176,7 @@ public class FileUploadControllerV1 {
 	
 	
 	@RequestMapping(method = RequestMethod.POST, path="/post/{lockType}")
-	public @ResponseBody()
-	ValidateDTO<PedidoFilesVO> postFiles(
+	public @ResponseBody() ValidateDTO<PedidoFilesVO> postFiles(
 			@AuthenticationPrincipal final SegurUser _user,
 			@PathVariable(required=true) String lockType,
 			@RequestParam("CMR_file") MultipartFile CMR_fileReceived[],
@@ -179,8 +190,14 @@ public class FileUploadControllerV1 {
 		MyServiceContext context = MyControlUtils.getServiceContext(_user);
 		
 		ValidateDTO<PedidoFilesVO> validate = new ValidateDTO<PedidoFilesVO>();
-		char charCod = lockType.charAt(0);
-		String codigo = charCod +"TR_" +_pedidoTrack.toString();
+		String bloqCod = "";
+		if(lockType.equalsIgnoreCase(FileTransferConstantes.BLOQ_VALIDADOR)){
+			bloqCod = "VAL_";
+		}
+		if(lockType.equalsIgnoreCase(FileTransferConstantes.BLOQ_FIRMADOR)){
+			bloqCod = "FIR_";
+		}
+		String codigo = bloqCod +_pedidoTrack.toString();
 		if(_pedidoTrack.startsWith("GRU") && _pedidoExp != null){
 			codigo = codigo+"-"+_pedidoExp;
 		}
@@ -199,17 +216,15 @@ public class FileUploadControllerV1 {
 		} else {
 			validate = storageService.registerFiles(context, CMR_fileReceived, FAC_fileReceived, OTR_filesReceived, _pedidoTrack, _pedidoExp, _refCarga);
 		}
-		
 		return validate;
 	}
 	
 	
-	@RequestMapping(method = RequestMethod.POST, path = "/postSigned/{lockType}")
-	public @ResponseBody()
-	ValidateDTO<PedidoFilesVO> postSignCMRFile(
+	@RequestMapping(method = RequestMethod.POST, path = "/postWatermarked/{lockType}")
+	public @ResponseBody() ValidateDTO<PedidoFilesVO> postWatermarkedSignFile(
 			@AuthenticationPrincipal final SegurUser _user,
 			@PathVariable(required = true) String lockType,
-			@RequestParam("signedFile") MultipartFile _signedFileReceived[],
+			@RequestParam("blobFile") MultipartFile _fileReceived[],
 			@RequestParam("orderTrack") String _pedidoTrack,
 			@RequestParam("orderExp") String _pedidoExp) 
 					throws IOException, PedidoFilesException, BloqueoServiceException {
@@ -217,21 +232,26 @@ public class FileUploadControllerV1 {
 		MyServiceContext context = MyControlUtils.getServiceContext(_user);
 		
 		ValidateDTO<PedidoFilesVO> validate = new ValidateDTO<PedidoFilesVO>();
-		char charCod = lockType.charAt(0);
-		String codigo = charCod +"TR_"+_pedidoTrack.toString();
+		String bloqCod = "";
+		if(lockType.equalsIgnoreCase(FileTransferConstantes.BLOQ_VALIDADOR)){
+			bloqCod = "VAL_";
+		}
+		if(lockType.equalsIgnoreCase(FileTransferConstantes.BLOQ_FIRMADOR)){
+			bloqCod = "FIR_";
+		}
+		String codigo = bloqCod +_pedidoTrack.toString();
 		if(_pedidoTrack.startsWith("GRU") && _pedidoExp != null){
 			codigo = codigo+"-"+_pedidoExp;
 		}
 		if(codigo.length()>32){
 			codigo = codigo.substring(0, 32);
 		}
-		
 		BloqueoControlVO bloqueoAct = bloqueoService.comprobarBloqueoUsuarioSession(context, lockType, codigo, _user.getNi());
 		if(bloqueoAct.getBloqueo() != null){
 			if(!bloqueoAct.getBloqueo().getUsuarioNi().equals(context.getUsuarioNi())){
 				validate.addError(new ErrorVO(_pedidoTrack, "El usuario: '"+bloqueoAct.getBloqueo().getUsername()+"', está bloqueando este CMR."));
 			} else {
-				validate = storageService.validateCMRFile(context, _signedFileReceived, _pedidoTrack, _pedidoExp);
+				validate = storageService.validateCMRFile(context, _fileReceived, _pedidoTrack, _pedidoExp);
 			}
 		}
 		return validate;

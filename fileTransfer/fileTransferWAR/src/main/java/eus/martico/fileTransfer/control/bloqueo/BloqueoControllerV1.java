@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import eus.martico.fileTransfer.config.FileTransferConstantes;
 import eus.martico.fileTransfer.control.MyControlUtils;
 import eus.martico.fileTransfer.model.ValidacionException;
 import eus.martico.fileTransfer.model.bloqueo.BloqueoVO;
@@ -44,7 +45,15 @@ public class BloqueoControllerV1 {
 			String track = valorParametroTR(_params);
 			String exp = valorParametroEXP(_params);
 			if(track != null){
-				codigo = "VTR_"+track.toString();
+				String prefix = "";
+				if(_tipo.equalsIgnoreCase(FileTransferConstantes.BLOQ_VALIDADOR)){
+					prefix = "VAL_";
+				}
+				if(_tipo.equalsIgnoreCase(FileTransferConstantes.BLOQ_FIRMADOR)){
+					prefix = "FIR_";
+				}
+				codigo = prefix + track.toString();
+				
 				if(track.startsWith("GRU") && exp != null){
 					codigo = codigo+"-"+exp;
 				}
@@ -66,7 +75,14 @@ public class BloqueoControllerV1 {
 			String track = valorParametroTR(_params);
 			String exp = valorParametroEXP(_params);
 			if(track != null){
-				codigo = "VTR_"+track.toString();
+				String prefix = "";
+				if(_tipo.equalsIgnoreCase(FileTransferConstantes.BLOQ_VALIDADOR)){
+					prefix = "VAL_";
+				}
+				if(_tipo.equalsIgnoreCase(FileTransferConstantes.BLOQ_FIRMADOR)){
+					prefix = "FIR_";
+				}
+				codigo = prefix + track.toString();
 				if(track.startsWith("GRU") && exp != null){
 					codigo = codigo+"-"+exp;
 				}
@@ -88,7 +104,14 @@ public class BloqueoControllerV1 {
 			String track = valorParametroTR(_params);
 			String exp = valorParametroEXP(_params);
 			if(track != null){
-				codigo = "VTR_"+track.toString();
+				String prefix = "";
+				if(_tipo.equalsIgnoreCase(FileTransferConstantes.BLOQ_VALIDADOR)){
+					prefix = "VAL_";
+				}
+				if(_tipo.equalsIgnoreCase(FileTransferConstantes.BLOQ_FIRMADOR)){
+					prefix = "FIR_";
+				}
+				codigo = prefix + track.toString();
 				if(track.startsWith("GRU") && exp != null){
 					codigo = codigo+"-"+exp;
 				}

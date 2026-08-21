@@ -26,6 +26,7 @@ import eus.martico.fileTransfer.dao.pedido.files.PedidoFilesException;
 import eus.martico.fileTransfer.dao.pedido.files.PedidoFilesIDAO;
 import eus.martico.fileTransfer.model.error.vo.ErrorVO;
 import eus.martico.fileTransfer.model.pedido.files.PedidoFilesVO;
+import eus.martico.fileTransfer.model.pedido.proveedor.PedidoProveedorVO;
 import eus.martico.fileTransfer.model.vo.BuscarDTO;
 import eus.martico.fileTransfer.model.vo.ValidateDTO;
 import eus.martico.fileTransfer.services.MyServiceContext;
@@ -48,6 +49,26 @@ public class FileSystemStorageServiceImp implements FileSystemStorageIService {
 	@Autowired
 	PedidoFilesIDAO pedidoFilesDAO;
 	
+	
+	/**
+	 * getPedidoProv
+	 * 
+	 * @param _context
+	 * @param _pedidoTrack
+	 * @param _pedidoExp
+	 * @return
+	 * @throws PedidoFilesException
+	 */
+	@Override
+	public PedidoProveedorVO getPedidoProv(MyServiceContext _context, String _pedidoTrack, String _pedidoExp) 
+			throws PedidoFilesException {
+		try {
+			return pedidoFilesDAO.getPedidoProv(_context, _pedidoTrack, _pedidoExp);
+		} catch (PedidoFilesException e) {
+			logger.error(e.getMessage());
+			throw new PedidoFilesException(e.getMessage());
+		}
+	}
 	
 	/**
 	 * getPedidoFiles
@@ -75,7 +96,7 @@ public class FileSystemStorageServiceImp implements FileSystemStorageIService {
 	 * 
 	 * @return Resource
 	 */
-	public Resource loadSign(String _filename){
+	public Resource loadSignWatermark(String _filename){
 		try {
 			Path signFilePath = FileTransferUtils.signLocation.resolve(_filename);
 			Resource resource = new UrlResource(signFilePath.toUri());
@@ -314,7 +335,7 @@ public class FileSystemStorageServiceImp implements FileSystemStorageIService {
 	/**
 	 * validateCMRFile
 	 * @param _context MyServiceContext
-	 * @param _signedFileReceived MultipartFile[]
+	 * @param _fileReceived MultipartFile[]
 	 * @param _track String
 	 * @param _expediente String
 	 * 
@@ -324,17 +345,17 @@ public class FileSystemStorageServiceImp implements FileSystemStorageIService {
 	 * @throws PedidoFilesException 
 	 */
 	@Transactional(rollbackFor = {IOException.class, PedidoFilesException.class})
-	public ValidateDTO<PedidoFilesVO> validateCMRFile (MyServiceContext _context, MultipartFile[] _signedFileReceived, String _track, String _exp) 
+	public ValidateDTO<PedidoFilesVO> validateCMRFile (MyServiceContext _context, MultipartFile[] _fileReceived, String _track, String _exp) 
 			throws PedidoFilesException, StorageException, IOException {
 		
-		logger.info("{} :: Validacion de CMR :: {}", _context.getUsername(), _signedFileReceived[0].getOriginalFilename());
+		logger.info("{} :: Validacion de CMR :: {}", _context.getUsername(), _fileReceived[0].getOriginalFilename());
 		
 		//El pedido tiene que estar ya registrado en FTARCHI
 		PedidoFilesVO pedidoReg = pedidoFilesDAO.getPedidoFiles(_track, _exp);
 		
 		ValidateDTO<PedidoFilesVO> validate = new ValidateDTO<PedidoFilesVO>();
-		if(_signedFileReceived.length > 0){
-			validate = this.validarCMR(_context, _signedFileReceived, pedidoReg, validate);
+		if(_fileReceived.length > 0){
+			validate = this.validarCMR(_context, _fileReceived, pedidoReg, validate);
 			logger.info("validateCMRFile :: CMR validado :: {}", _track);
 		}
 		return validate;
@@ -658,12 +679,12 @@ public class FileSystemStorageServiceImp implements FileSystemStorageIService {
 	}
 	
 	private ValidateDTO<PedidoFilesVO> validarCMR (MyServiceContext _context, 
-			MultipartFile[] _signedFileReceived, 
+			MultipartFile[] _fileReceived, 
 			PedidoFilesVO _pedidoReg, 
 			ValidateDTO<PedidoFilesVO> _validate) 
 					throws IOException, StorageException, PedidoFilesException {
 		
-		if(_signedFileReceived.length > 0){
+		if(_fileReceived.length > 0){
 			String track = _pedidoReg.getRefPed();
 			String exp = _pedidoReg.getExpediente();
 			
@@ -687,7 +708,7 @@ public class FileSystemStorageServiceImp implements FileSystemStorageIService {
 				if(!fExt.toLowerCase().equals("pdf")){
 					//Si no es .pdf viene ya con el sello
 					//Lo transformamos a .pdf
-					byte[] imgConvertidaEnPDF = FileTransferUtils.convertirImagenApdf(_signedFileReceived[0].getBytes(), fExt);
+					byte[] imgConvertidaEnPDF = FileTransferUtils.convertirImagenApdf(_fileReceived[0].getBytes(), fExt);
 					logger.info("validarCMR :: TR:{} :: EXP:{} :: Imagen convertida a PDF.", track, exp);
 					
 					//SAVE IMG_CONVERT.PDF

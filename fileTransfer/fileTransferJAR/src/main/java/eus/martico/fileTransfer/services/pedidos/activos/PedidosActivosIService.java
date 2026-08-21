@@ -17,9 +17,6 @@ import eus.martico.fileTransfer.services.MyServiceContext;
  */
 public interface PedidosActivosIService {
 		
-	PedidoProveedorVO getPedidoProv(MyServiceContext _context, String _pedidoTrack, String _pedidoExp) 
-			throws PedidosActivosServiceException, PedidoFilesException;
-	
 	PedidoGrupajeVO getGrupaje(MyServiceContext _context, String _track) 
 			throws PedidoFilesException;
 	

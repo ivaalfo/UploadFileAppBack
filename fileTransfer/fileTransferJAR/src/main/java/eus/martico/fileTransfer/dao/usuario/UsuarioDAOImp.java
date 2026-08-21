@@ -20,6 +20,7 @@ import org.springframework.util.StringUtils;
 import eus.martico.fileTransfer.config.FileTransferConstantes;
 import eus.martico.fileTransfer.dao.BaseGenDAO;
 import eus.martico.fileTransfer.dao.DAOException;
+import eus.martico.fileTransfer.dao.firmador.FirmadorDAOImpCons;
 import eus.martico.fileTransfer.model.pedido.proveedor.PedidoProveedorDAOImpCons;
 import eus.martico.fileTransfer.model.usuario.UsuarioVO;
 import eus.martico.fileTransfer.model.usuario.rol.TipoRolEnum;
@@ -595,7 +596,6 @@ public class UsuarioDAOImp extends BaseGenDAO<UsuarioVO> implements UsuarioIDAO 
 	@Override
 	public String getSqlPedidos(boolean isExterno) {
 		StringBuilder sql = new StringBuilder();
-
 		if(isExterno){
 			//Lógica para EXTERNOS:
 			sql.append(SELECT_BASE).append(PedidoProveedorDAOImpCons.BD_VISTA_FCTPDNPRV);
@@ -614,15 +614,30 @@ public class UsuarioDAOImp extends BaseGenDAO<UsuarioVO> implements UsuarioIDAO 
 	public String getSqlProveedores(boolean isNameSearch) {
 		String campoSelect = isNameSearch ? UsuarioDAOImpCons.BD_LDUSUAR_W2USUARIO : UsuarioDAOImpCons.BD_CLIPRO_CLICOD;
 		String campoWhere = isNameSearch ? UsuarioDAOImpCons.BD_CLIPRO_CLICOD : "UPPER("+UsuarioDAOImpCons.BD_LDUSUAR_W2USUARIO+")";
-		
 		if(isNameSearch){
 			return "SELECT " + campoSelect + SUBQUERY_USER_PROV + " WHERE " + campoWhere + " = ?";
 		} else {
 			return "SELECT " + campoSelect + SUBQUERY_USER_PROV + " WHERE " + campoWhere + " LIKE ?";
 		}
 	}
-
-
+	
+	@Override
+	public String getSqlPedidosFirma(boolean isExterno){
+		StringBuilder sql = new StringBuilder();
+		if(isExterno){
+			//Lógica para EXTERNOS:
+			sql.append(SELECT_BASE).append(FirmadorDAOImpCons.BD_TABLA_FTCMR);
+			sql.append(" WHERE F3CLICOD = (SELECT c.clicod ").append(SUBQUERY_USER_PROV);
+			sql.append(" WHERE ").append(UsuarioDAOImpCons.BD_LDUSUAR_W2USUKY).append(" = ? )");
+		} else {
+			//Lógica para INTERNOS/ADMIN: 
+			sql.append(SELECT_BASE).append(FirmadorDAOImpCons.BD_TABLA_FTCMR);
+			sql.append(" WHERE 1=1 ");
+		}
+		return sql.toString();
+	}
+	
+	
 	private List<String> getRolesFT(String _username) throws UsuarioDAOException {
 		List<String> datos = this.jdbcTemplate.query(sqlSelectRolesByName.toString(), 
 			(PreparedStatementSetter) ps -> {

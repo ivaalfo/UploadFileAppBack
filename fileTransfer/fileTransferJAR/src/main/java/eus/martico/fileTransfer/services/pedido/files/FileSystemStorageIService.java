@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import eus.martico.fileTransfer.dao.pedido.files.PedidoFilesException;
 import eus.martico.fileTransfer.model.pedido.files.PedidoFilesVO;
+import eus.martico.fileTransfer.model.pedido.proveedor.PedidoProveedorVO;
 import eus.martico.fileTransfer.model.vo.BuscarDTO;
 import eus.martico.fileTransfer.model.vo.ValidateDTO;
 import eus.martico.fileTransfer.services.MyServiceContext;
@@ -22,11 +23,15 @@ import eus.martico.fileTransfer.services.MyServiceContext;
 public interface FileSystemStorageIService {
 	
 	
+	PedidoProveedorVO getPedidoProv(MyServiceContext _context, String _pedidoTrack, String _pedidoExp) 
+			throws PedidoFilesException;
+	
+	
 	BuscarDTO<PedidoFilesVO> getPedidoFiles(MyServiceContext context, String track, String exp) 
 			throws PedidoFilesException;
 
 	
-	Resource loadSign(String _filename);
+	Resource loadSignWatermark(String _filename);
 
 	
 	ResponseEntity<Resource> loadCMRasResource(MyServiceContext _context, String _track, String _exp) 
@@ -55,7 +60,7 @@ public interface FileSystemStorageIService {
 					throws IOException, PedidoFilesException;
 
 	
-	ValidateDTO<PedidoFilesVO> validateCMRFile(MyServiceContext _context, MultipartFile[] _signedFileReceived, String _track, String _expediente) 
+	ValidateDTO<PedidoFilesVO> validateCMRFile(MyServiceContext _context, MultipartFile[] _fileReceived, String _track, String _expediente) 
 			throws PedidoFilesException, StorageException, IOException;
 	
 	ValidateDTO<PedidoFilesVO> rejectCMRFile(MyServiceContext _context, String _track, String _expediente, String _motivoRechazo) 

@@ -17,9 +17,6 @@ import eus.martico.fileTransfer.services.MyServiceContext;
  */
 public interface PedidosActivosIDAO {
 	
-	PedidoProveedorVO getPedidoProv(MyServiceContext _context, String _pedidoTrack, String _pedidoExp) 
-			throws PedidosActivosException, PedidoFilesException;
-	
 	Integer insertFecREAL(final PedidoFilesVO _pedidoF) 
 			throws PedidoFilesException;
 	

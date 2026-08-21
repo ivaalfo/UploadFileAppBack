@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import eus.martico.fileTransfer.model.pedido.files.PedidoFilesVO;
 import eus.martico.fileTransfer.model.pedido.proveedor.PedidoGrupajeVO;
+import eus.martico.fileTransfer.model.pedido.proveedor.PedidoProveedorVO;
 import eus.martico.fileTransfer.services.MyServiceContext;
 
 /**
@@ -14,6 +15,8 @@ import eus.martico.fileTransfer.services.MyServiceContext;
  *
  */
 public interface PedidoFilesIDAO {
+	
+	PedidoProveedorVO getPedidoProv(MyServiceContext _context, String _pedidoTrack, String _pedidoExp) throws PedidoFilesException;
 	
 	PedidoFilesVO getPedidoFiles(String _track, String _exp) throws PedidoFilesException;
 	PedidoFilesVO setPedidoInicial(MyServiceContext _context, String _track, String _exp, LocalDateTime _fecEntRealDate);

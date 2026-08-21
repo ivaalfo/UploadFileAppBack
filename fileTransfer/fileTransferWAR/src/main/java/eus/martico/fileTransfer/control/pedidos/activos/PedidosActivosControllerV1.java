@@ -22,7 +22,6 @@ import eus.martico.fileTransfer.dao.pedido.files.PedidoFilesException;
 import eus.martico.fileTransfer.model.pedido.proveedor.PedidoGrupajeFechasVO;
 import eus.martico.fileTransfer.model.pedido.proveedor.PedidoGrupajeVO;
 import eus.martico.fileTransfer.model.pedido.proveedor.PedidoProveedorVO;
-import eus.martico.fileTransfer.model.vo.BuscarDTO;
 import eus.martico.fileTransfer.seguridad.user.entity.SegurUser;
 import eus.martico.fileTransfer.services.MyServiceContext;
 import eus.martico.fileTransfer.services.pedidos.activos.PedidosActivosIService;
@@ -43,16 +42,6 @@ public class PedidosActivosControllerV1 extends PedidosActivosServiceImp {
 	@Autowired(required=true)
 	private PedidosActivosIService pedidosActivosService;
 	
-	
-	@RequestMapping(method = RequestMethod.GET, path="/getPedidoProv/{track}/{exp}")
-	public @ResponseBody() BuscarDTO<PedidoProveedorVO> getPedido(
-			@AuthenticationPrincipal final SegurUser user,
-			@PathVariable(required=true) String track,
-			@PathVariable(required=true) String exp) throws PedidosActivosServiceException, PedidoFilesException {
-		
-		MyServiceContext context = MyControlUtils.getServiceContext(user);
-		return new BuscarDTO<PedidoProveedorVO>(pedidosActivosService.getPedidoProv(context, track, exp));
-	}
 	
 	@RequestMapping(method = RequestMethod.GET, path="/getGrupaje/{track}")
 	public @ResponseBody() PedidoGrupajeVO getGrupaje(

@@ -64,6 +64,8 @@ public class PedidoFilesVO extends EntityVO {
 	private LocalDateTime fechaEntReal;
 		
 	
+	/********** GETTERS Y SETTERS **********/
+	
 	public String getRefPed() {
 		return refPed;
 	}

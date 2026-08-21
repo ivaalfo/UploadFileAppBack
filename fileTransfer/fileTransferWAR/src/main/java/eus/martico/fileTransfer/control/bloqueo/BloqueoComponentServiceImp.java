@@ -44,9 +44,6 @@ public class BloqueoComponentServiceImp implements BloqueoComponentIService {
 			if(bloqueoTimer != null){
 				bloqueoTimer.iniciar(bloqueo);
 			}
-			//XXX FT : PASAR POR PARAM LA ACCION :: 1-validacion, 2-rechazo
-			//bloqueoService.marcarAccion(_context, bloqueo, byte);
-			//Para saber porque esta bloqueado no solo por quien
 			validate.setDatos(bloqueo);
 			MensajeVO mensaje = new MensajeVO();
 			mensaje.setCodigo(BloqueoVO.BLOQUEO_OK);
@@ -68,21 +65,19 @@ public class BloqueoComponentServiceImp implements BloqueoComponentIService {
 
 			//Si los usuarios son iguales SI se bloquea
 			if(_userNi == bloqueo.getUsuarioNi()){
-				//SI Bloquea
-				//marcamos el error
+				//SI Bloquea - marcamos el error
 				error.setDescripcion(bloqueo.getUsername());	//bloqueo.getApellidosNombre());
 				validate.addError(error);
 			} else {
 				//Si los usuarios son distintos 
-				//Pero se selecciona el mismo contendor para asignar	
+				//Pero seleccionan el mismo documento (codigo)	
 				if(_codigo.equals(bloqueo.getCodigo())){
-					//SI Bloquea
-					//marcamos el error
+					//SI Bloquea - marcamos el error
 					error.setDescripcion(bloqueo.getUsername());		//bloqueo.getApellidosNombre());
 					validate.addError(error);
 				} else {
 					//Si los usuarios son distintos 
-					//Y el contenedor que seleccionan es distinto
+					//Y el documento que seleccionan es distinto
 					//NO se bloquea
 					MensajeVO mensaje = new MensajeVO();
 					mensaje.setCodigo(BloqueoVO.BLOQUEO_OK);
@@ -96,12 +91,12 @@ public class BloqueoComponentServiceImp implements BloqueoComponentIService {
 	@Override
 	public ValidateDTO<BloqueoVO> finalizar(MyServiceContext _context, final String _tipo, final String _codigo, final long _userNi) 
 			throws BloqueoServiceException {
-		// Comprobamos que el bloqueo es del usuario que lo solicita
+		//Comprobamos que el bloqueo es del usuario que lo solicita
 		String codigoError = null;
 		ValidateDTO<BloqueoVO> validate = new ValidateDTO<BloqueoVO>();
 		BloqueoControlVO controlBloqueo = comprobarBloqueoUsuarioSession(_context, _tipo, _codigo, _userNi);
 		if(controlBloqueo.isMyBloqueo() /* || _forzarFinalizar */) {
-			// Es el mismo usuario o lo pide el ADMIN
+			//Es el mismo usuario o lo pide el ADMIN
 			Integer x = bloqueoService.finalizar(_context, _tipo, _codigo, _userNi);
 			if((x != null) && (x > 0)) {
 				MensajeVO mensaje = new MensajeVO();
@@ -111,7 +106,7 @@ public class BloqueoComponentServiceImp implements BloqueoComponentIService {
 				logger.info("Bloqueo finalizado: Usuario: "+_context.getUsername()+" : UserNi: "+_userNi);
 				logger.info("Bloqueo finalizado: Codigo: "+_codigo);
 			} else {
-				// puede ser que justo lo haya finalizado manualmente el usuario ???
+				//puede ser que justo lo haya finalizado manualmente el usuario ???
 				codigoError = BloqueoVO.BLOQUEO_ERROR_FINALIZANDO;
 			}			
 			if(bloqueoTimer != null){
@@ -189,30 +184,30 @@ public class BloqueoComponentServiceImp implements BloqueoComponentIService {
 		if(bloqueoAct != null){
 			if(bloqueoAct.getUsuarioNi() == _userNi){
 				bloqueo.setMismoUsuario(true);
-				// Es el mismo usuario, comprobamos la session
-				// Existe un bloqueo activo del mismo usuario 
+				//Es el mismo usuario, comprobamos la session
+				//Existe un bloqueo activo del mismo usuario 
 				if(bloqueoAct.getSessionId() != null){
-					// El bloqueo tiene sesion
+					//El bloqueo tiene sesion
 					if(_context.getSessionId() == null){
-						// Esta peticion no tiene sesion 
+						//Esta peticion no tiene sesion 
 						bloqueo.setMismaSession(false);
 					} else {
 						// esta peticion tiene sesion, las sesiones pueden ser diferentes en cada peticion lo damos por buena
 						if(_context.getSessionId().equals(bloqueoAct.getSessionId())){
-							// Es la misma sesion que solicita el bloqueo, lo damos por bueno y no hacemos nada
+							//Es la misma sesion que solicita el bloqueo, lo damos por bueno y no hacemos nada
 						} else {
-							// Es otra sesion del mimso usuario
+							//Es otra sesion del mimso usuario
 							bloqueo.setMismaSession(false);
 						}
 					}
 				} else {
-					// El bloqueo no tiene sesion
+					//El bloqueo no tiene sesion
 					if(_context.getSessionId() == null){
-						// Esta peticion no tiene sesion
-						// Es el mismo usuario el que solicita el bloqueo, lo damos por bueno y no hacemos nada
+						//Esta peticion no tiene sesion
+						//Es el mismo usuario el que solicita el bloqueo, lo damos por bueno y no hacemos nada
 					} else {
-						// Esta peticion tiene sesion
-						// Como el bloqueo no tiene sesion, le negamos el nuevo bloqueo
+						//Esta peticion tiene sesion
+						//Como el bloqueo no tiene sesion, le negamos el nuevo bloqueo
 						bloqueo.setMismaSession(false);
 					}
 				}
@@ -225,7 +220,6 @@ public class BloqueoComponentServiceImp implements BloqueoComponentIService {
 	public ValidateDTO<BloqueoVO> reiniciar(MyServiceContext _context, final String _tipo, final String _codigo, final long _userNi) throws BloqueoServiceException {		
 		ValidateDTO<BloqueoVO> validate = null;
 		String codigoError = null;
-		//BloqueoVO bloqueoAct = comprobarBloqueoUsuarioSession(_context, _tipo, _userNi);
 		BloqueoControlVO controlBloqueo = comprobarBloqueoUsuarioSession(_context, _tipo, _codigo, _userNi);
 		if(controlBloqueo.isMyBloqueo()){
 			if(bloqueoTimer != null){
@@ -250,7 +244,7 @@ public class BloqueoComponentServiceImp implements BloqueoComponentIService {
 		if(codigoError != null) {
 			ErrorVO error = new ErrorVO();
 			validate = new ValidateDTO<BloqueoVO>();
-			// marcamos el error
+			//marcamos el error
 			error.setCodigo(codigoError);
 			if(controlBloqueo.getBloqueo() != null){
 				error.setDescripcion(controlBloqueo.getBloqueo().getUsername());		//controlBloqueo.getBloqueo().getApellidosNombre());

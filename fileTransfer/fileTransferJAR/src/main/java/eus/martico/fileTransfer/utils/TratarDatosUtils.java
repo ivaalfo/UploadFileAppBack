@@ -21,6 +21,7 @@ import eus.martico.fileTransfer.dao.pedido.files.PedidoFilesException;
 import eus.martico.fileTransfer.dao.pedido.files.PedidoFilesIDAO;
 import eus.martico.fileTransfer.dao.usuario.UsuarioDAOException;
 import eus.martico.fileTransfer.dao.usuario.UsuarioIDAO;
+import eus.martico.fileTransfer.model.firma.PedidoFirmadorVO;
 import eus.martico.fileTransfer.model.pedido.factura.PedidoFacturaDAOImpMapper;
 import eus.martico.fileTransfer.model.pedido.factura.PedidoFacturaVO;
 import eus.martico.fileTransfer.model.pedido.files.PedidoFilesVO;
@@ -502,6 +503,23 @@ public class TratarDatosUtils {
 				}
 			}
 		}
+	}
+	
+	/**
+	 * obtenerProvNameDestName
+	 * @param pedido PedidoFirmadorVO
+	 * @param usuarioDAO UsuarioIDAO
+	 * @throws UsuarioDAOException
+	 */
+	public static void obtenerProvNameDestName(PedidoFirmadorVO pedido, UsuarioIDAO usuarioDAO) 
+			throws UsuarioDAOException {
+		//Obtener Trasportista
+		String trasName = usuarioDAO.getProvByCLICOD(pedido.getF3cliCod());
+		pedido.setProvUser(trasName);
+		
+		//Obtener Destinatario
+		String destName = usuarioDAO.getProvByCLICOD(pedido.getF3destCod());
+		pedido.setDestUser(destName);
 	}
 	
 	/**

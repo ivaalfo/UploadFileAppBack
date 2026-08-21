@@ -45,6 +45,7 @@ public class PedidoFilesDAOImp extends BaseGenDAO<PedidoFilesVO> implements Pedi
 
 
 	private static StringBuilder sqlSelectAll = new StringBuilder("SELECT * FROM ");
+	private static StringBuilder sqlSelectPedidoByTrAndExp;
 	private static StringBuilder sqlSelectPFilesByTrAndExp;
 	
 	private static StringBuilder sqlUpdateCMR;
@@ -58,6 +59,15 @@ public class PedidoFilesDAOImp extends BaseGenDAO<PedidoFilesVO> implements Pedi
 	
 	
 	static {
+		
+		sqlSelectPedidoByTrAndExp = new StringBuilder("SELECT distinct * FROM ");
+		sqlSelectPedidoByTrAndExp.append(PedidoProveedorDAOImpCons.BD_VISTA_FCTPDNPRV);
+		sqlSelectPedidoByTrAndExp.append(" WHERE ");
+		sqlSelectPedidoByTrAndExp.append(" TRIM("+PedidoProveedorDAOImpCons.BD_FCTPDNPRV_TR+")");
+		sqlSelectPedidoByTrAndExp.append(" = ? ");
+		sqlSelectPedidoByTrAndExp.append(" AND ");
+		sqlSelectPedidoByTrAndExp.append(" TRIM("+PedidoProveedorDAOImpCons.BD_FCTPDNPRV_EXPEDIENTE+")");
+		sqlSelectPedidoByTrAndExp.append(" = ? ");
 		
 		List<String> camposUpdateCMR = new ArrayList<String>(Arrays.asList(
 				PedidoFilesDAOImpCons.BD_FTARCHI_RUTCMR,
@@ -140,6 +150,29 @@ public class PedidoFilesDAOImp extends BaseGenDAO<PedidoFilesVO> implements Pedi
 		sqlSelectInVistaByGrup.append(PedidoProveedorDAOImpCons.BD_FCTPDNPRV_TR);
 		sqlSelectInVistaByGrup.append(" LIKE ? ");
 		sqlSelectInVistaByGrup.append(" ORDER BY " +PedidoProveedorDAOImpCons.BD_FCTPDNPRV_EXPEDIENTE);
+	}
+	
+	
+	@Override
+	public PedidoProveedorVO getPedidoProv(MyServiceContext _context, String _pedidoTrack, String _pedidoExp) 
+			throws PedidoFilesException {
+		logger.info("getPedido: TR:{} :: EXP:{}", _pedidoTrack, _pedidoExp);
+		try {
+			String trimTR = _pedidoTrack.trim();
+			String trimEXP = _pedidoExp.trim();
+			List<PedidoProveedorVO> listPedidoProv = this.jdbcTemplate.query(sqlSelectPedidoByTrAndExp.toString(), new PedidoProveedorDAOImpMapper(), trimTR, trimEXP);
+			if(listPedidoProv.isEmpty()){
+				return null;
+			} else {
+				PedidoProveedorVO pProv = listPedidoProv.get(0);
+				PedidoFilesVO pFiles = getPedidoFiles(pProv.getTrack(), pProv.getExpediente());
+				TratarDatosUtils.tratarMotRechazo(pProv, pFiles);
+				return pProv;
+			}
+		} catch (DataAccessException e) {
+			logger.error(e.getMessage());
+			throw new PedidoFilesException(DAOException.SQLERRCODE_QUERY, e.getMessage());
+		}
 	}
 
 	

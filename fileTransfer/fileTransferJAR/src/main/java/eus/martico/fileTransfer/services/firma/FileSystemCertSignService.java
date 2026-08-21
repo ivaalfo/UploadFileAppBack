@@ -95,7 +95,7 @@ public class FileSystemCertSignService {
 	 * @param pdfBytes Array de bytes del documento PDF a validar.
 	 * @return boolean true si el PDF ya está firmado, false si está limpio.
 	 */
-	public static boolean verificarPDFyaFirmado(byte[] pdfBytes) {		//NO SE USA
+	public static boolean verificarPDFyaFirmado(byte[] pdfBytes) {		//NO SE USA  ¿ NEW ?
 		if (pdfBytes == null || pdfBytes.length == 0) {
 			return false;
 		}
@@ -206,5 +206,38 @@ public class FileSystemCertSignService {
 			throw new PedidoFilesException("El documento no se ha podido certificar por causas ajenas al sistema (Fallo en la certificación digital PAdES).");
 		}
 	}
+	
+	//TODO Firmado Incremental Acumulativo
+//	public static byte[] firmadoAcumulativo(){
+//		// 1. Cargar el PDF que ya contiene la primera firma
+//		File pdfExistente = new File("camino/al/cmr_con_firma1.pdf");
+//		PDDocument document = PDDocument.load(pdfExistente);
+//
+//		// 2. Crear un nuevo campo de firma para el Proveedor (Firma 2)
+//		PDSignature signature = new PDSignature();
+//		signature.setFilter(PDSignature.SUBFILTER_ADBE_PKCS7_DETACHED);
+//		signature.setName("Proveedor X");
+//		signature.setLocation("Madrid");
+//		signature.setReason("Validación de recepción de CMR");
+//		signature.setSignDate(Calendar.getInstance());
+//
+//		// 3. (Opcional) Asociar el PNG del garabato visual a este campo de firma
+//		// Aquí configurarías las coordenadas (X, Y) donde quieres que se pinte el PNG en la hoja
+//
+//		// 4. Registrar la firma en el documento
+//		document.addSignature(signature);
+//
+//		// 5. ¡EL TRUCO CLAVE! Guardar en modo incremental
+//		// Esto añade los cambios al final del archivo sin romper la Firma 1
+//		FileOutputStream outputStream = new FileOutputStream("camino/al/cmr_con_firma1_y_2.pdf");
+//		SigningSupport signingSupport = document.saveIncrementalForExternalSigning(outputStream);
+//
+//		// 6. Aquí integras tu lógica actual de firmado (la que decías que ya tienes local con el certificado)
+//		byte[] cmsSignature = tuMetodoDeFirmadoCriptografico(signingSupport.getContent());
+//		signingSupport.setSignature(cmsSignature);
+//
+//		document.close();
+//		outputStream.close();
+//	}
 	
 }
