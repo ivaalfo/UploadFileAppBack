@@ -737,7 +737,7 @@ public class FileSystemStorageServiceImp implements FileSystemStorageIService {
 				String p12certPass = FileTransferConfiguration.getProperty(FileTransferConstantes.CERT_PASS);
 
 				try {
-					byte[] pdfCertificadoBytes = FileSystemCertSignService.firmarPDFconCertificado(pdfConMarcaDeAguaBytes, p12certPath, p12certPass);
+					byte[] pdfCertificadoBytes = FileSystemCertSignService.firmarPDFconCertificado(pdfConMarcaDeAguaBytes, p12certPath, p12certPass, false, null);
 					//GUARDADO: Guardamos el PDF final firmado y certificado en su ubicación destino
 					FileTransferUtils.storeByteFile(pathVALCMRpdf, pdfCertificadoBytes);
 					logger.info("validarCMR :: TR:{} :: EXP:{} :: PDF Certificado digitalmente y almacenado con éxito.", track, exp);
@@ -747,8 +747,7 @@ public class FileSystemStorageServiceImp implements FileSystemStorageIService {
 					return _validate;
 				}
 				// =============================================
-				// BLOQUE DE CERTIFICACIÓN CRIPTOGRÁFICA (PAdES) - FIN
-				// =============================================
+				
 				
 				//SAVE FAC :: Para Matrix
 				if(_pedidoReg.getEstadoFAC().equals(FileTransferConstantes.ESTADO_1_FICH_SUBIDO)){

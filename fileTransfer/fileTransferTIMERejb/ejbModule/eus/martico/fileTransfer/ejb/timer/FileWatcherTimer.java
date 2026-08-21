@@ -92,8 +92,12 @@ public class FileWatcherTimer {
             		Path pathPdf = Paths.get(salidas_Path, fName);
             		pdfBytes = Files.readAllBytes(pathPdf);
             		
+            		//Metemos el watermark de Martico.SL
+            		String signFileName = FileTransferConfiguration.getProperty(FileTransferConstantes.SIGN_FILE_NAME);
+            		Path signFilePath = FileTransferUtils.signLocation.resolve(signFileName);
+					byte[] selloPNG = FileTransferUtils.getByteFile(signFilePath);
 					//Metemos la firma inicial de Martico.SL
-					byte[] pdfCertificadoBytes = FileSystemCertSignService.firmarPDFconCertificado(pdfBytes, p12certPath, p12certPass);
+					byte[] pdfCertificadoBytes = FileSystemCertSignService.firmarPDFconCertificado(pdfBytes, p12certPath, p12certPass, true, selloPNG);
 					//Guardamosen en ./firmados
 					Path pathSignedCMR = Paths.get(salidas_Path+"/firmados/"+fName);
 					FileTransferUtils.storeByteFile(pathSignedCMR, pdfCertificadoBytes);

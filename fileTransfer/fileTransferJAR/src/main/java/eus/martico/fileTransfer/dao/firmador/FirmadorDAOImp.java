@@ -1,7 +1,12 @@
 package eus.martico.fileTransfer.dao.firmador;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -10,18 +15,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.stereotype.Service;
 
+import eus.martico.fileTransfer.config.FileTransferConfiguration;
 import eus.martico.fileTransfer.config.FileTransferConstantes;
 import eus.martico.fileTransfer.dao.BaseGenDAO;
 import eus.martico.fileTransfer.dao.DAOException;
 import eus.martico.fileTransfer.dao.usuario.UsuarioDAOException;
 import eus.martico.fileTransfer.dao.usuario.UsuarioIDAO;
-import eus.martico.fileTransfer.model.error.vo.ErrorVO;
 import eus.martico.fileTransfer.model.firma.PedidoFirmadorVO;
 import eus.martico.fileTransfer.model.firma.PipelineFirmaDTO;
+import eus.martico.fileTransfer.model.mensaje.vo.MensajeVO;
 import eus.martico.fileTransfer.model.vo.ValidateDTO;
 import eus.martico.fileTransfer.services.MyServiceContext;
+import eus.martico.fileTransfer.services.firma.FileSystemCertSignService;
+import eus.martico.fileTransfer.sql.SqlUtils;
+import eus.martico.fileTransfer.utils.FileTransferUtils;
 import eus.martico.fileTransfer.utils.TratarDatosUtils;
 
 /**
@@ -43,6 +53,8 @@ public class FirmadorDAOImp extends BaseGenDAO<PedidoFirmadorVO> implements Firm
 	
 	private static StringBuilder sqlSelectPFirmaByTrAndExp;
 	
+	private static StringBuilder sqlUpdateEstadoCMRfirma;
+	
 		
 	//Pedidos por firmar (firma1, firma2, firma3)
 	private static StringBuilder condicionEstados = 
@@ -62,6 +74,7 @@ public class FirmadorDAOImp extends BaseGenDAO<PedidoFirmadorVO> implements Firm
 					" ORDER BY F3FECCM1 DESC "
 							+ " FETCH FIRST 1000 ROWS ONLY "
 					);
+	
 
 	static {
 		sqlSelectPFirmaByTrAndExp = new StringBuilder("SELECT distinct * FROM ");
@@ -72,8 +85,19 @@ public class FirmadorDAOImp extends BaseGenDAO<PedidoFirmadorVO> implements Firm
 		sqlSelectPFirmaByTrAndExp.append(" AND ");
 		sqlSelectPFirmaByTrAndExp.append(" TRIM("+FirmadorDAOImpCons.BD_FTCMR_EXPEDI+")");
 		sqlSelectPFirmaByTrAndExp.append(" = ? ");
+
+
+		List<String> camposUpdateESTADO = new ArrayList<String>(Arrays.asList(
+				FirmadorDAOImpCons.BD_FTCMR_ESTCMR
+				));
+
+		sqlUpdateEstadoCMRfirma = SqlUtils.generarSqlUpdate(
+				FirmadorDAOImpCons.BD_TABLA_FTCMR, 
+				camposUpdateESTADO, 
+				FirmadorDAOImpCons.BD_FTCMR_REFPED, 
+				FirmadorDAOImpCons.BD_FTCMR_EXPEDI);
 	}
-	
+
 	
 	@Override
 	public PedidoFirmadorVO getPedidoFirma(String _track, String _exp) throws FirmadorException {
@@ -90,6 +114,29 @@ public class FirmadorDAOImp extends BaseGenDAO<PedidoFirmadorVO> implements Firm
 			}
 		} catch (DataAccessException e) {
 			logger.error(e.getMessage());
+			throw new FirmadorException(DAOException.SQLERRCODE_QUERY, e.getMessage());
+		}
+	}
+	
+	@Override
+	public Integer updateEstadoFirma(String _track, String _exp, Long _estadoCMRfirma)
+			throws FirmadorException {
+		logger.info("updateEstadoFirma :: REFPED: {} : EXP: {} : F3ESTCMR: {} : ", _track, _exp, _estadoCMRfirma);
+		try {
+			int x = this.jdbcTemplate.update(sqlUpdateEstadoCMRfirma.toString(),
+					new PreparedStatementSetter(){
+				public void setValues(PreparedStatement ps)
+				throws SQLException {
+					int i=1;
+					ps.setLong(i++, _estadoCMRfirma);
+					
+					ps.setString(i++, _track);
+					ps.setString(i++, _exp);
+				}
+			});
+			return x;
+		} catch (DataAccessException e) {
+			logger.error("updateEstadoFirma: ", e.getMessage());
 			throw new FirmadorException(DAOException.SQLERRCODE_QUERY, e.getMessage());
 		}
 	}
@@ -174,7 +221,7 @@ public class FirmadorDAOImp extends BaseGenDAO<PedidoFirmadorVO> implements Firm
 			lista = tratarListaPFirm(lista);
 			return lista;
 		} catch (DataAccessException e) {
-			logger.error("getPedidosFiltrados: {}", e.getMessage());
+			logger.error("getPedidosFiltrados: {}" + e.getMessage());
 			throw new FirmadorException(DAOException.SQLERRCODE_QUERY, e.getMessage());	
 		}
 	}
@@ -184,44 +231,72 @@ public class FirmadorDAOImp extends BaseGenDAO<PedidoFirmadorVO> implements Firm
 			throws FirmadorException {
 		ValidateDTO<PedidoFirmadorVO> validate = new ValidateDTO<PedidoFirmadorVO>();
 		String track = _firmaDTO.getTrack();
-		//TODO FIRMADOR
-		//Si estado es 1 = firmado por Martico
-		//Lógica para firmar el archivo por el Proveedor (2a)
-		//Leemos el ya firmado por nosotros
-		//Aplicamos el garabato que viene aqui sobre el original Firmado
-		//Update estado = 2
-		//TODO FIRMADOR
-		//Si estado es 2 = firmado por Martico + Proveedor
-		//Lógica para firmar el archivo por el Destino (3a)
-		//Leemos el ya firmado
-		//Aplicamos el garabato que viene aqui sobre el Firmado(2o)
-		//Update estado = 3
+		String exp = _firmaDTO.getExp();
+		PedidoFirmadorVO pFirma = this.getPedidoFirma(track, exp);
 		
-		
-		
-//	    String exp = firmaDTO.getExp();
-//	    String rCarga = firmaDTO.getRCarga();
-//	    String base64Firma = firmaDTO.getImagenFirmaBase64();
-//	    Boolean isFirmaAcumulativa = firmaDTO.getIsFirmaAcumulativa();
-//	    
-//	    //CONVERSIÓN: Convertir el texto Base64 a bytes reales de imagen
-//	    byte[] imagenFirmaBytes = null;
-//	    if (base64Firma != null && !base64Firma.isEmpty()) {
-//	        try {
-//	            //Decodificamos el String Base64 puro a un array de bytes (PNG)
-//	            imagenFirmaBytes = Base64.getDecoder().decode(base64Firma);
-//	            logger.info("Imagen de firma descodificada correctamente. Tamaño: " + imagenFirmaBytes.length + " bytes.");
-//	        } catch (IllegalArgumentException e) {
-//	            throw new PedidoFilesException("El formato de la imagen de la firma no es un Base64 válido.");
-//	        }
-//	    }
-//
-//	    // 3. Continuar con tu lógica de negocio...
-//	    // Aquí es donde comprobarás:
-//	    // if (isFirmaAcumulativa) { ... llamar al nuevo flujo incremental con SD-DSS ... }
-//	    // else { ... tu flujo de primera firma actual ... }
+		if (pFirma == null) {
+	        throw new FirmadorException("No se ha encontrado el registro de firma para el pedido indicado.");
+	    }
+		int estadoActual = pFirma.getF3estado();
+	    int numeroFirma = 0;
+	    int siguienteEstado = 0;
+	    String rolFirmante = "";
 	    
-		validate.addError(new ErrorVO("XXXX", "NEW SIGN_FILE_SERVICE TR: " +track));
+	    if (estadoActual == 1) {
+	    	//Firmado por Martico/Almacén -> Toca firma del Transportista (Firma 2)
+	    	numeroFirma = 2;
+	        siguienteEstado = 2;
+	        rolFirmante = "Transportista Efectivo";
+	    } else if (estadoActual == 2) {
+	        //Firmado por Martico + Transportista -> Toca firma del Destinatario (Firma 3)
+	    	numeroFirma = 3;
+	        siguienteEstado = 3;
+	        rolFirmante = "Destinatario / Receptor";
+	    } else {
+	        throw new FirmadorException("El documento ya se encuentra en un estado que no admite más firmas acumulativas (Estado actual: " + estadoActual + ").");
+	    }
+		
+	    try {
+	    	//LEER EL ARCHIVO PDF ACTUAL
+	    	Path filePath = Paths.get(pFirma.getF3rutCMR());
+	    	byte[] pdfConFirmasPrevias = FileTransferUtils.getByteFile(filePath);
+	    	
+	    	//CONVERTIR EL BASE64 DEL CANVAS A BYTES REALES (PNG)
+	        byte[] pngFirmaBytes = null;
+	        if (_firmaDTO.getImagenFirmaBase64() != null && !_firmaDTO.getImagenFirmaBase64().isEmpty()) {
+	            pngFirmaBytes = Base64.getDecoder().decode(_firmaDTO.getImagenFirmaBase64());
+	        } else {
+	            throw new FirmadorException("Es obligatorio adjuntar el trazo o sello visual de la firma.");
+	        }
+
+	        //RECUPERAR RUTA Y CREDENCIALES DEL CERTIFICADO
+	        String p12certPath = FileTransferConfiguration.getProperty(FileTransferConstantes.CERT_PATH);
+			String p12certPass = FileTransferConfiguration.getProperty(FileTransferConstantes.CERT_PASS);
+	        
+	        //LLAMAMOS a la función de FIRMA INCREMENTAL que añade los bytes al final sin romper nada
+	        byte[] pdfResultadoIncremental = FileSystemCertSignService.firmadoDSSIncrementalAcumulativo(
+	                pdfConFirmasPrevias, 
+	                pngFirmaBytes, 
+	                p12certPath, 
+	                p12certPass, 
+	                numeroFirma, 
+	                rolFirmante
+	        );
+	        
+	        //GUARDAMOS el nuevo pdf en el Servidor
+	        FileTransferUtils.storeByteFile(filePath, pdfResultadoIncremental);
+
+	        //UPDATE F3ESTADO en BBDD
+	        Long _estadoFirma = new Long(siguienteEstado);
+	        this.updateEstadoFirma(track, exp, _estadoFirma);
+	        
+	        logger.info("añadirFirmaIncremental :: Firma acumulativa num." + numeroFirma + " integrada con éxito para el TR: " + track);
+	        validate.addMensaje(new MensajeVO("OK", "CMR Firmado correctamente (Firma " + numeroFirma + "). TR: " + track));
+	        
+		} catch (Exception e) {
+	        logger.error("ERROR al procesar la firma acumulativa incremental: " + e.getMessage());
+	        throw new FirmadorException("Error al procesar la firma acumulativa incremental: " + e.getMessage());
+	    }
 		return validate;
 	}
 	
@@ -231,7 +306,7 @@ public class FirmadorDAOImp extends BaseGenDAO<PedidoFirmadorVO> implements Firm
 			throws FirmadorException, UsuarioDAOException {
 		if(listaOriginal == null || listaOriginal.isEmpty()) return new ArrayList<>();
 
-		//TODO FIRMADOR
+		//TODO FIRMADOR ¿?
 		
 		//1.Limpiamos duplicados
 //		List<PedidoProveedorVO> listaFiltrada = TratarDatosUtils.tratarDuplicados(listaOriginal);

@@ -3,6 +3,7 @@ package eus.martico.fileTransfer.services.firma;
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.KeyStore.PasswordProtection;
@@ -26,6 +27,8 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.pades.SignatureFieldParameters;
+import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.service.http.commons.TimestampDataLoader;
 import eu.europa.esig.dss.service.tsp.OnlineTSPSource;
@@ -50,7 +53,7 @@ public class FileSystemCertSignService {
 	protected static final Logger logger = LoggerFactory.getLogger(FileSystemStorageServiceImp.class);
 
 	/**
-	 * Image PDF Watermark - ConvertApi
+	 * Image PDF Watermark - ConvertApi		//OLD DELETE
 	 * @param _pathOr String
 	 * @param _dirDes String
 	 * 
@@ -124,7 +127,7 @@ public class FileSystemCertSignService {
 	 * @throws PedidoFilesException
 	 * @throws IOException
 	 */
-	public static byte[] firmarPDFconCertificado(byte[] pdfOriginalBytes, String certPath, String certPass) 
+	public static byte[] firmarPDFconCertificado(byte[] pdfOriginalBytes, String certPath, String certPass, Boolean conSello, byte[] pngFirmaBytes) 
 			throws PedidoFilesException, IOException {
 
 		//Cargamos el certificado .p12 usando el token de DSS
@@ -150,39 +153,45 @@ public class FileSystemCertSignService {
 
 			//Leer el entorno configurado en el properties
 			String entorno = FileTransferConfiguration.getProperty(FileTransferConstantes.CERT_ENV);
-
 			//4.CONTROL DE ENTORNOS DINÁMICO
-			if("PROD".equalsIgnoreCase(entorno)) {		//NO_SE_USA
-				//Configuración para PRODUCCIÓN (Sello de Tiempo Legal)
+			if("PROD".equalsIgnoreCase(entorno)) {		//NEW NO SE USA DE MOMENTO 
+				//Configuración para PRODUCCIÓN
 				parameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_T);
-
-				String urlCompletaTsa = FileTransferConfiguration.getProperty(FileTransferConstantes.CERT_TSA_URL);
-				OnlineTSPSource tspSource = new OnlineTSPSource();
-				tspSource.setTspServer(urlCompletaTsa);		//Ejemplo: https://camerfirma.com
-
-				TimestampDataLoader timestampDataLoader = new TimestampDataLoader();
-
-				//Si el proveedor de la TSA exige usuario y contraseña en producción:
-				String usuarioTsa = FileTransferConfiguration.getProperty(FileTransferConstantes.CERT_TSA_USER);
-				String passwordTsa = FileTransferConfiguration.getProperty(FileTransferConstantes.CERT_TSA_PASS);
-				
-				if(usuarioTsa != null && !usuarioTsa.trim().isEmpty()) {
-					//EXTRAER EL HOST AUTOMÁTICAMENTE DE LA URL COMPLETA
-					java.net.URL urlParser = new java.net.URL(urlCompletaTsa);
-					String hostTsa = urlParser.getHost(); 	//Devuelve "camerfirma.com" limpiamente
-					
-					//Parámetros: host, puerto (443 para https), esquema, usuario, password
-					timestampDataLoader.addAuthentication(hostTsa, 443, "Basic", usuarioTsa, passwordTsa.toCharArray());
-				}
-
-				tspSource.setDataLoader(timestampDataLoader);
-				//Inyectar la fuente de tiempo
-				service.setTspSource(tspSource);
-
+				//Insertar Sello de Tiempo Legal
+				service = insertarTSA(service);
 			} else {
 				//Configuración por defecto para DESA / PRUEBAS (Firma Básica Local)
 				parameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
 			}
+			
+			//============== METER SELLO INICIAL =====
+			if (conSello && pngFirmaBytes != null && pngFirmaBytes.length > 0) {
+			    SignatureImageParameters imageParameters = new SignatureImageParameters();
+			    DSSDocument imageDocument = new InMemoryDocument(pngFirmaBytes);
+			    imageParameters.setImage(imageDocument);
+			    
+			    //Forzamos un cuadrado perfecto para que coincida con los 329x327 píxeles del sello.png
+			    int anchoCaja = 60;
+			    int altoCaja = 60;
+			    
+			    int posicionBaseY = 702;
+			    int posicionY = posicionBaseY + 45; 
+			    
+			    //Como ahora la caja mide 60 de ancho en vez de 130, le sumamos un desfase 
+			    //de 35 puntos a la X para que el sello quede centrado en el mismo sitio que antes
+			    int posicionX = 60 + 35; 
+
+			    SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+			    fieldParameters.setPage(1);				
+			    fieldParameters.setOriginX(posicionX);  
+			    fieldParameters.setOriginY(posicionY);  
+			    fieldParameters.setWidth(anchoCaja);   	
+			    fieldParameters.setHeight(altoCaja);   	
+
+			    imageParameters.setFieldParameters(fieldParameters);
+			    parameters.setImageParameters(imageParameters);
+			}
+			//==============================
 
 			//Convertir los bytes del PDF al formato que entiende DSS
 			DSSDocument documentToSign = new InMemoryDocument(pdfOriginalBytes);
@@ -207,37 +216,141 @@ public class FileSystemCertSignService {
 		}
 	}
 	
-	//TODO Firmado Incremental Acumulativo
-//	public static byte[] firmadoAcumulativo(){
-//		// 1. Cargar el PDF que ya contiene la primera firma
-//		File pdfExistente = new File("camino/al/cmr_con_firma1.pdf");
-//		PDDocument document = PDDocument.load(pdfExistente);
-//
-//		// 2. Crear un nuevo campo de firma para el Proveedor (Firma 2)
-//		PDSignature signature = new PDSignature();
-//		signature.setFilter(PDSignature.SUBFILTER_ADBE_PKCS7_DETACHED);
-//		signature.setName("Proveedor X");
-//		signature.setLocation("Madrid");
-//		signature.setReason("Validación de recepción de CMR");
-//		signature.setSignDate(Calendar.getInstance());
-//
-//		// 3. (Opcional) Asociar el PNG del garabato visual a este campo de firma
-//		// Aquí configurarías las coordenadas (X, Y) donde quieres que se pinte el PNG en la hoja
-//
-//		// 4. Registrar la firma en el documento
-//		document.addSignature(signature);
-//
-//		// 5. ¡EL TRUCO CLAVE! Guardar en modo incremental
-//		// Esto añade los cambios al final del archivo sin romper la Firma 1
-//		FileOutputStream outputStream = new FileOutputStream("camino/al/cmr_con_firma1_y_2.pdf");
-//		SigningSupport signingSupport = document.saveIncrementalForExternalSigning(outputStream);
-//
-//		// 6. Aquí integras tu lógica actual de firmado (la que decías que ya tienes local con el certificado)
-//		byte[] cmsSignature = tuMetodoDeFirmadoCriptografico(signingSupport.getContent());
-//		signingSupport.setSignature(cmsSignature);
-//
-//		document.close();
-//		outputStream.close();
-//	}
-	
+
+	/**
+	 * firmadoDSSIncrementalAcumulativo
+	 * @param pdfConFirmasPrevias byte[]
+	 * @param pngFirmaBytes byte[]
+	 * @param p12certPath String
+	 * @param p12certPass String
+	 * @param numeroFirma int
+	 * @param rolFirmante String
+	 * 
+	 * @return byte[]
+	 */
+	public static byte[] firmadoDSSIncrementalAcumulativo(
+			byte[] pdfConFirmasPrevias, 
+			byte[] pngFirmaBytes, 
+			String p12certPath, 
+			String p12certPass, 
+			int numeroFirma, 
+			String rolFirmante) throws Exception {
+
+		//1. Cargar el certificado .p12 vuestro
+		try (Pkcs12SignatureToken token = new Pkcs12SignatureToken(
+				new FileInputStream(p12certPath), 
+				new PasswordProtection(p12certPass.toCharArray()))) {
+
+			List<DSSPrivateKeyEntry> keys = token.getKeys();
+			DSSPrivateKeyEntry privateKey = keys.get(0);
+
+			//2. Configurar parámetros PAdES
+			PAdESSignatureParameters parameters = new PAdESSignatureParameters();
+			parameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
+			parameters.setSigningCertificate(privateKey.getCertificate());
+			
+			//3. Invocación del servicio oficial PAdES de SD-DSS -> cambiado el orden
+	        CommonCertificateVerifier verifier = new CommonCertificateVerifier();
+	        PAdESService service = new PAdESService(verifier);
+
+			//Control dinámico de entorno para el Sello de Tiempo
+			String entorno = FileTransferConfiguration.getProperty(FileTransferConstantes.CERT_ENV);
+			if ("PROD".equalsIgnoreCase(entorno)) {		//NEW NO SE USA DE MOMENTO 
+				parameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_T);
+				// ... Aquí metes tu bloque actual de la TSA con OnlineTSPSource ...
+				//Insertar Sello de Tiempo Legal
+				service = insertarTSA(service);
+			} else {
+				parameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
+			}
+			
+			//4. CONFIGURACIÓN VISUAL DEL RECUADRO DE FIRMA (SD-DSS 5.13)
+			// =========================================================================
+			if (pngFirmaBytes != null && pngFirmaBytes.length > 0) {
+			    SignatureImageParameters imageParameters = new SignatureImageParameters();
+			    DSSDocument imageDocument = new InMemoryDocument(pngFirmaBytes);
+			    imageParameters.setImage(imageDocument);
+			    
+			    //Medidas fijas para encajar en el recuadro del CMR
+			    int anchoCaja = 130;
+			    int altoCaja = 60;
+
+			    //Base general para la altura que calculamos en el paso anterior
+			    int posicionBaseY = 702; 
+			    int posicionX = 0;
+			    int posicionY = posicionBaseY;
+
+			    if (numeroFirma == 2) {
+			        posicionX = 240; 		//Cuadrante central
+			        posicionY = posicionBaseY + 45; 
+			        
+			    } else if (numeroFirma == 3) {
+			        posicionX = 420; 		//Cuadrante derecho
+			        posicionY = posicionBaseY;
+			    }
+
+			    SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+			    fieldParameters.setPage(1);
+			    fieldParameters.setOriginX(posicionX);
+			    fieldParameters.setOriginY(posicionY);
+			    fieldParameters.setWidth(anchoCaja);
+			    fieldParameters.setHeight(altoCaja);
+			    imageParameters.setFieldParameters(fieldParameters);
+
+			    parameters.setImageParameters(imageParameters);
+			}
+			// =========================================================================
+
+	        //Convertimos el PDF previo a documento DSS
+	        DSSDocument documentToSign = new InMemoryDocument(pdfConFirmasPrevias);
+
+	        //5. Firma criptográfica
+	        ToBeSigned dataToSign = service.getDataToSign(documentToSign, parameters);
+	        SignatureValue signatureValue = token.sign(dataToSign, parameters.getDigestAlgorithm(), privateKey);
+	        
+	        //SD-DSS detecta que ya hay firmas y genera los bytes puros incrementales de forma nativa
+	        DSSDocument signedDocument = service.signDocument(documentToSign, parameters, signatureValue);
+
+	        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+	        signedDocument.writeTo(baos);
+	        
+	        return baos.toByteArray();
+		}
+	}
+
+	/**
+	 * insertarTSA
+	 * @param service PAdESService
+	 * 
+	 * @return PAdESService
+	 * @throws MalformedURLException
+	 */
+	private static PAdESService insertarTSA(PAdESService padesService) throws MalformedURLException {
+		//Insertar Sello de Tiempo Legal
+		String urlCompletaTsa = FileTransferConfiguration.getProperty(FileTransferConstantes.CERT_TSA_URL);
+		OnlineTSPSource tspSource = new OnlineTSPSource();
+		tspSource.setTspServer(urlCompletaTsa);		//Ejemplo: https://camerfirma.com
+
+		TimestampDataLoader timestampDataLoader = new TimestampDataLoader();
+
+		//Si el proveedor de la TSA exige usuario y contraseña en producción:
+		String usuarioTsa = FileTransferConfiguration.getProperty(FileTransferConstantes.CERT_TSA_USER);
+		String passwordTsa = FileTransferConfiguration.getProperty(FileTransferConstantes.CERT_TSA_PASS);
+
+		if(usuarioTsa != null && !usuarioTsa.trim().isEmpty()) {
+			//EXTRAER EL HOST AUTOMÁTICAMENTE DE LA URL COMPLETA
+			java.net.URL urlParser = new java.net.URL(urlCompletaTsa);
+			String hostTsa = urlParser.getHost(); 	//Devuelve "camerfirma.com" limpiamente
+
+			//Parámetros: host, puerto (443 para https), esquema, usuario, password
+			timestampDataLoader.addAuthentication(hostTsa, 443, "Basic", usuarioTsa, passwordTsa.toCharArray());
+		}
+
+		tspSource.setDataLoader(timestampDataLoader);
+		//Inyectar la fuente de tiempo
+		padesService.setTspSource(tspSource);
+
+		return padesService;
+	}
+
 }

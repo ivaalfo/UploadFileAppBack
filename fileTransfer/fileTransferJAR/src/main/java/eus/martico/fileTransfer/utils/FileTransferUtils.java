@@ -198,7 +198,6 @@ public class FileTransferUtils {
 	 * determinarEstadoGeneral
 	 * @param _pedido PedidoFilesVO
 	 * @param _pedidoTrack String
-	 * 
 	 * @return estadoGeneral Integer
 	 * @throws PedidoFilesException
 	 */
@@ -293,7 +292,6 @@ public class FileTransferUtils {
 	 * @param _fileType String
 	 * @param _track String
 	 * @param _completeFname String
-	 * 
 	 * @return Path
 	 * @throws StorageException
 	 */
@@ -342,7 +340,6 @@ public class FileTransferUtils {
 	 * @param _fileType String
 	 * @param _completePath Path
 	 * @param _completeFname String
-	 * 
 	 * @return Path
 	 */
 	public static Path getNewPath(String _fileType, Path _completePath, String _completeFname){
@@ -366,10 +363,20 @@ public class FileTransferUtils {
 	}
 	
 	/**
+	 * getByteFile
+	 * @param targetPath Path
+	 * @return byte[]
+	 * @throws IOException
+	 */
+	public static byte[] getByteFile(Path targetPath) throws IOException {
+		byte[] byteFile = Files.readAllBytes(targetPath);
+		return byteFile;
+	}
+	
+	/**
 	 * storeByteFile
 	 * @param targetPath Path
 	 * @param contenido byte[]
-	 * 
 	 * @throws IOException
 	 */
 	public static void storeByteFile(Path targetPath, byte[] contenido) 
@@ -384,7 +391,6 @@ public class FileTransferUtils {
 	 * storeFile
 	 * @param _path Path
 	 * @param _mfile MultipartFile
-	 * 
 	 * @throws IOException
 	 */
 	public static void storeFile(Path _path, MultipartFile _mfile)
@@ -408,7 +414,6 @@ public class FileTransferUtils {
 	 * deleteFile
 	 * @param _oldPath Path
 	 * @param _completeFname String
-	 * 
 	 * @return boolean
 	 */
 	public static boolean deleteFile(Path _oldPath, String _completeFname) {
