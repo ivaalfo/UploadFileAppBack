@@ -3,6 +3,7 @@
 	<name>fileTransferWebEar</name>
 	<comment></comment>
 	<projects>
+		<project>fileTransferWebMovil</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

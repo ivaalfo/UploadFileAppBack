@@ -21,7 +21,6 @@ import eus.martico.fileTransfer.model.vo.ValidateDTO;
 import eus.martico.fileTransfer.services.MyServiceContext;
 import eus.martico.fileTransfer.services.seguridad.password.PasswordException;
 import eus.martico.fileTransfer.services.seguridad.password.PasswordIService;
-import eus.martico.fileTransfer.services.usuario.UsuarioIService;
 import eus.martico.fileTransfer.services.usuario.rol.UsuarioRolIService;
 
 /**

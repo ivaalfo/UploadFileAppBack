@@ -44,6 +44,7 @@ public interface UsuarioIDAO {
 	String getSqlPedidos(boolean isExterno);
 	String getSqlProveedores(boolean isNameSearch);
 	
-	String getSqlPedidosFirma(boolean isExterno);
+//	//NEW descartado
+//	String getSqlPedidosFirma(boolean isExterno);
 
 }

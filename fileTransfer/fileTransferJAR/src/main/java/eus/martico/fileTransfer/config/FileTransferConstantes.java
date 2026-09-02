@@ -132,9 +132,9 @@ public class FileTransferConstantes {
 //	public static final String CODIGO_NULO_VACIO = "--";
 //	public static final Character OBSERVACIONES_SEPARADOR = '#';
 //	public static final Character OBSERVACIONES_SEPARADOR_AUTO = ' ';
-	
-	public static final String CONVERT_API_TK_FREE		= "filetransfer.convert.api.token.FREE";
-	public static final String CONVERT_API_TK_PROD		= "filetransfer.convert.api.token.PROD";
+//	OLD DELETE EN DESUSO
+//	public static final String CONVERT_API_TK_FREE		= "filetransfer.convert.api.token.FREE";
+//	public static final String CONVERT_API_TK_PROD		= "filetransfer.convert.api.token.PROD";
 	
 	public static final String CERT_ENV			= "filetransfer.certificados.entorno";
 	public static final String CERT_PATH 		= "filetransfer.certificados.ruta";
@@ -143,9 +143,11 @@ public class FileTransferConstantes {
 	public static final String CERT_TSA_USER 	= "filetransfer.certificados.tsa-user";
 	public static final String CERT_TSA_PASS 	= "filetransfer.certificados.tsa-pass";
 	
-	public static final int ESTADO_FIRMADO_A = FileTransferConfiguration.getIntProperty("estado.firmado.mart");
-	public static final int ESTADO_FIRMADO_B = FileTransferConfiguration.getIntProperty("estado.firmado.tras");
-	public static final int ESTADO_FIRMADO_C = FileTransferConfiguration.getIntProperty("estado.firmado.dest");
+//	NEW descartado
+//	public static final int ESTADO_FIRMA_INICIO 		= FileTransferConfiguration.getIntProperty("estado.firmado.inicio");
+//	public static final int ESTADO_FIRMA_MARTICO 		= FileTransferConfiguration.getIntProperty("estado.firmado.martico");
+//	public static final int ESTADO_FIRMA_TRANSPORTISTA 	= FileTransferConfiguration.getIntProperty("estado.firmado.transpo");
+//	public static final int ESTADO_FIRMA_DESTINATARIO 	= FileTransferConfiguration.getIntProperty("estado.firmado.destina");
 	
 	
 	//TODO arreglar JndiLookup

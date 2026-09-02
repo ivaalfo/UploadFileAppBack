@@ -368,10 +368,10 @@ public class FileTransferUtils {
 	 * @return byte[]
 	 * @throws IOException
 	 */
-	public static byte[] getByteFile(Path targetPath) throws IOException {
-		byte[] byteFile = Files.readAllBytes(targetPath);
-		return byteFile;
-	}
+//	public static byte[] getByteFile(Path targetPath) throws IOException {
+//		byte[] byteFile = Files.readAllBytes(targetPath);
+//		return byteFile;
+//	}
 	
 	/**
 	 * storeByteFile
@@ -569,6 +569,8 @@ public class FileTransferUtils {
 			return out.toByteArray();
 		}
 	}
+	
+
 	
 	private static void comprobarArchivoDañado(MultipartFile _file, String mimeType) throws PedidoFilesException {
 	    if (_file.isEmpty()) {

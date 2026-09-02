@@ -1,0 +1,118 @@
+{
+  "configVersion": 1,
+  "timestamp": 1787570630691,
+  "index": "/fileTransferMovil/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "updateMode": "prefetch",
+      "urls": [
+        "/fileTransferMovil/5-es2015.cdb04abb8a59c6e3a0bf.js",
+        "/fileTransferMovil/5-es5.cdb04abb8a59c6e3a0bf.js",
+        "/fileTransferMovil/config.js",
+        "/fileTransferMovil/favicon.png",
+        "/fileTransferMovil/index.html",
+        "/fileTransferMovil/main-es2015.dcbc430b0b9f79a7f962.js",
+        "/fileTransferMovil/main-es5.dcbc430b0b9f79a7f962.js",
+        "/fileTransferMovil/manifest.json",
+        "/fileTransferMovil/polyfills-es2015.e4735c83e43e5fcce8cc.js",
+        "/fileTransferMovil/polyfills-es5.c924f94b28d4fe5ce145.js",
+        "/fileTransferMovil/runtime-es2015.275f4f765a0db30eff44.js",
+        "/fileTransferMovil/runtime-es5.275f4f765a0db30eff44.js",
+        "/fileTransferMovil/styles.8fa11422dfa3d4ea3ef9.css"
+      ],
+      "patterns": []
+    },
+    {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "urls": [
+        "/fileTransferMovil/assets/i18n/es.json",
+        "/fileTransferMovil/assets/icons/QR.svg",
+        "/fileTransferMovil/assets/icons/barcode.svg",
+        "/fileTransferMovil/assets/icons/camera.svg",
+        "/fileTransferMovil/assets/icons/cancel.svg",
+        "/fileTransferMovil/assets/icons/check.svg",
+        "/fileTransferMovil/assets/icons/exit.svg",
+        "/fileTransferMovil/assets/icons/icon-128x128.png",
+        "/fileTransferMovil/assets/icons/icon-144x144.png",
+        "/fileTransferMovil/assets/icons/icon-152x152.png",
+        "/fileTransferMovil/assets/icons/icon-192x192.png",
+        "/fileTransferMovil/assets/icons/icon-384x384.png",
+        "/fileTransferMovil/assets/icons/icon-512x512.png",
+        "/fileTransferMovil/assets/icons/icon-72x72.png",
+        "/fileTransferMovil/assets/icons/icon-96x96.png",
+        "/fileTransferMovil/assets/icons/info.svg",
+        "/fileTransferMovil/assets/icons/logo1.svg",
+        "/fileTransferMovil/assets/icons/logo2.png",
+        "/fileTransferMovil/assets/icons/logout.svg",
+        "/fileTransferMovil/assets/images/icons/key.png",
+        "/fileTransferMovil/assets/images/icons/logout.png",
+        "/fileTransferMovil/assets/images/icons/user.png",
+        "/fileTransferMovil/assets/images/login-logo.png",
+        "/fileTransferMovil/assets/images/logo.png"
+      ],
+      "patterns": []
+    }
+  ],
+  "dataGroups": [],
+  "hashTable": {
+    "/fileTransferMovil/5-es2015.cdb04abb8a59c6e3a0bf.js": "1ee10690050f902da08f13f39b71ee9a68029ccf",
+    "/fileTransferMovil/5-es5.cdb04abb8a59c6e3a0bf.js": "b2da192367a1aab415c5be5246af89079ba80a1e",
+    "/fileTransferMovil/assets/i18n/es.json": "5484a2c269972f9baf07d545049714795ebe7a0b",
+    "/fileTransferMovil/assets/icons/QR.svg": "0c15378b23357848eb6c59cbb35a4f2da1214fcf",
+    "/fileTransferMovil/assets/icons/barcode.svg": "270dbb8f08170c68f24d741ca12d8afa9ab5a34a",
+    "/fileTransferMovil/assets/icons/camera.svg": "a19cb78e4587a3ca7c4d28627cc9e7bfcb2242a9",
+    "/fileTransferMovil/assets/icons/cancel.svg": "5794e3473b8bae0c184fe8dc4e9bc68dd70c4eeb",
+    "/fileTransferMovil/assets/icons/check.svg": "a7af5d28195beedb7b889bfcfa1b10eda567b199",
+    "/fileTransferMovil/assets/icons/exit.svg": "5a05163e7f94c652274624fa4530b8a73f7904c5",
+    "/fileTransferMovil/assets/icons/icon-128x128.png": "dcb74630cd5fe13e2dfa54a5a6237e3db0bb7079",
+    "/fileTransferMovil/assets/icons/icon-144x144.png": "7ab6bf2ababb481caba1417db6550c8530afc566",
+    "/fileTransferMovil/assets/icons/icon-152x152.png": "f0eb6a5bba64355bea3f27e18e8128123fc8066d",
+    "/fileTransferMovil/assets/icons/icon-192x192.png": "274d164cc8897fae37958a0e40ba304a8bd872cf",
+    "/fileTransferMovil/assets/icons/icon-384x384.png": "edd40f6590def8dcf46f4c05bc7c0f47123c91b5",
+    "/fileTransferMovil/assets/icons/icon-512x512.png": "75815d06306a342a856674fb73de7cd138f60f41",
+    "/fileTransferMovil/assets/icons/icon-72x72.png": "3fd4dd74f57406472643c7c37f75a6852c322042",
+    "/fileTransferMovil/assets/icons/icon-96x96.png": "18871236df2d64ced2acf5984850cb7f9fb45605",
+    "/fileTransferMovil/assets/icons/info.svg": "51a9b0f9b873b73d8dbe86e15b1c4cfb02897a26",
+    "/fileTransferMovil/assets/icons/logo1.svg": "fed26d19c690a2b4cf6850b2b63f6347bb88e9a0",
+    "/fileTransferMovil/assets/icons/logo2.png": "40caa927487773e3cbe1325dae518d5251e410f8",
+    "/fileTransferMovil/assets/icons/logout.svg": "324fb89d0a3ffdb98a666a5c87342b7ef3f1bd0a",
+    "/fileTransferMovil/assets/images/icons/key.png": "e6428317769b11f230ee2055e8c286fc8316a433",
+    "/fileTransferMovil/assets/images/icons/logout.png": "4aac39215eb8c0886c315ffea01ea29e4f906bc6",
+    "/fileTransferMovil/assets/images/icons/user.png": "4aac39215eb8c0886c315ffea01ea29e4f906bc6",
+    "/fileTransferMovil/assets/images/login-logo.png": "f00ebb7259f1306fa503a4a50e4b35429e521198",
+    "/fileTransferMovil/assets/images/logo.png": "ab4ae54c133868fff3477a8b9643b193f4a1472e",
+    "/fileTransferMovil/config.js": "620130a0ba7694835061651a5ff4ef30ef314d7c",
+    "/fileTransferMovil/favicon.png": "55d0e229212a14de60d1140dfc2ccacb880a8984",
+    "/fileTransferMovil/index.html": "df7a29eca2fb4f435e05eb35260db86c20f41577",
+    "/fileTransferMovil/main-es2015.dcbc430b0b9f79a7f962.js": "f18cee7be8adb8a819507e81050eb713ccc21ac3",
+    "/fileTransferMovil/main-es5.dcbc430b0b9f79a7f962.js": "09a527adea6a56b7103d04bc1004004b05ecf4d2",
+    "/fileTransferMovil/manifest.json": "71446fcf888b488b9d315e621d0f3678110d7f7b",
+    "/fileTransferMovil/polyfills-es2015.e4735c83e43e5fcce8cc.js": "bfc0e98be19e00503d7399ee45e0af5c0d6a9f6f",
+    "/fileTransferMovil/polyfills-es5.c924f94b28d4fe5ce145.js": "238b0b8fd61428229e4360cfa026d7d8526adc06",
+    "/fileTransferMovil/runtime-es2015.275f4f765a0db30eff44.js": "d1cf945b35fa98dc776db2c2114818506f989dbe",
+    "/fileTransferMovil/runtime-es5.275f4f765a0db30eff44.js": "aff4f31cf358d95c22263217cb0342d09e1b9bb0",
+    "/fileTransferMovil/styles.8fa11422dfa3d4ea3ef9.css": "fbd508d7633067c80d9b49261fe37e4d2153277c"
+  },
+  "navigationUrls": [
+    {
+      "positive": true,
+      "regex": "^\\/.*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*\\.[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*\\/.*$"
+    }
+  ]
+}

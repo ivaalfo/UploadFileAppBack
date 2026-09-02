@@ -5,5 +5,9 @@
             <dependent-object>Module_1755177156010</dependent-object>
             <dependency-type>uses</dependency-type>
         </dependent-module>
+        <dependent-module archiveName="fileTransferMovil.war" deploy-path="/" handle="module:/resource/fileTransferWebMovil/fileTransferWebMovil">
+            <dependent-object>Module_1787565551754</dependent-object>
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
     </wb-module>
 </project-modules>

@@ -1,7 +1,7 @@
 package eus.martico.fileTransfer.model.firma;
 
 /**
- * NEW
+ * NEW descartado
  * @author Martico S.L. :: ialfonso
  * @version 1.0
  * @see https://www.martico.es/

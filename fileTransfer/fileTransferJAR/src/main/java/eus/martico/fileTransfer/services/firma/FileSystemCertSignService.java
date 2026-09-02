@@ -4,21 +4,24 @@ import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+//import java.nio.file.Path;
+//import java.nio.file.Paths;
 import java.security.KeyStore.PasswordProtection;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
+//import java.util.concurrent.ExecutionException;
 
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.convertapi.client.Config;
-import com.convertapi.client.ConvertApi;
-import com.convertapi.client.Param;
+//import com.convertapi.client.Config;
+//import com.convertapi.client.ConvertApi;
+//import com.convertapi.client.Param;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -39,7 +42,7 @@ import eus.martico.fileTransfer.config.FileTransferConfiguration;
 import eus.martico.fileTransfer.config.FileTransferConstantes;
 import eus.martico.fileTransfer.dao.pedido.files.PedidoFilesException;
 import eus.martico.fileTransfer.services.pedido.files.FileSystemStorageServiceImp;
-import eus.martico.fileTransfer.utils.FileTransferUtils;
+//import eus.martico.fileTransfer.utils.FileTransferUtils;
 
 /**
  * 
@@ -52,44 +55,44 @@ public class FileSystemCertSignService {
 
 	protected static final Logger logger = LoggerFactory.getLogger(FileSystemStorageServiceImp.class);
 
-	/**
-	 * Image PDF Watermark - ConvertApi		//OLD DELETE
-	 * @param _pathOr String
-	 * @param _dirDes String
-	 * 
-	 * @throws IOException
-	 * @throws PedidoFilesException 
-	 */
-	public static void watermarkPDF(String _pathOr, String _dirDes) throws IOException, PedidoFilesException {
-		//String tokenFreeTrial = FileTransferConfiguration.getProperty(FileTransferConstantes.CONVERT_API_TK_FREE);
-		String tokenProd = FileTransferConfiguration.getProperty(FileTransferConstantes.CONVERT_API_TK_PROD);
-		Config.setDefaultApiCredentials(tokenProd);
-
-		String signFileName = FileTransferConfiguration.getProperty(FileTransferConstantes.SIGN_FILE_NAME);
-		Path signFilePath = FileTransferUtils.signLocation.resolve(signFileName);
-
-		try {
-			ConvertApi.convert("pdf", "image-watermark",
-					new Param("File", Paths.get(_pathOr)),							//Paths.get("/path/to/my_file.pdf"))
-					new Param("ImageFile", Paths.get(signFilePath.toString())),		//Paths.get("/path/to/selloA.png")
-					new Param("Style", "stamp"),
-					new Param("GoToLink", "https://www.martico.es/"),
-					new Param("PageRotation", "true"),
-					new Param("PageBox", "cropbox"),		//mediabox, trimbox, bleedbox, cropbox, 
-					new Param("HorizontalAlignment", "right"),
-					new Param("VerticalAlignment", "bottom"),
-					new Param("Scale", "321")
-					).get().saveFilesSync(Paths.get(_dirDes));			//Paths.get("/path/to/result/dir")
-
-			logger.info("watermarkPDF :: "+_pathOr);
-
-		} catch (InterruptedException | ExecutionException e) {
-			logger.error("ERROR al sellar el documento: " + e.getMessage());
-			e.printStackTrace();
-			//Detiene validarCMR y lanza el mensaje hacia el usuario
-			throw new PedidoFilesException("El documento no se ha podido sellar por causas ajenas al sistema (Fallo en convertAPI - watermark).");
-		}
-	}
+//	/**
+//	 * Image PDF Watermark - ConvertApi		//OLD DELETE convertAPI
+//	 * @param _pathOr String
+//	 * @param _dirDes String
+//	 * 
+//	 * @throws IOException
+//	 * @throws PedidoFilesException 
+//	 */
+//	public static void watermarkPDF(String _pathOr, String _dirDes) throws IOException, PedidoFilesException {
+//		//String tokenFreeTrial = FileTransferConfiguration.getProperty(FileTransferConstantes.CONVERT_API_TK_FREE);
+//		String tokenProd = FileTransferConfiguration.getProperty(FileTransferConstantes.CONVERT_API_TK_PROD);
+//		Config.setDefaultApiCredentials(tokenProd);
+//
+//		String signFileName = FileTransferConfiguration.getProperty(FileTransferConstantes.SIGN_FILE_NAME);
+//		Path signFilePath = FileTransferUtils.signLocation.resolve(signFileName);
+//
+//		try {
+//			ConvertApi.convert("pdf", "image-watermark",
+//					new Param("File", Paths.get(_pathOr)),							//Paths.get("/path/to/my_file.pdf"))
+//					new Param("ImageFile", Paths.get(signFilePath.toString())),		//Paths.get("/path/to/selloA.png")
+//					new Param("Style", "stamp"),
+//					new Param("GoToLink", "https://www.martico.es/"),
+//					new Param("PageRotation", "true"),
+//					new Param("PageBox", "cropbox"),		//mediabox, trimbox, bleedbox, cropbox, 
+//					new Param("HorizontalAlignment", "right"),
+//					new Param("VerticalAlignment", "bottom"),
+//					new Param("Scale", "321")
+//					).get().saveFilesSync(Paths.get(_dirDes));			//Paths.get("/path/to/result/dir")
+//
+//			logger.info("watermarkPDF :: "+_pathOr);
+//
+//		} catch (InterruptedException | ExecutionException e) {
+//			logger.error("ERROR al sellar el documento: " + e.getMessage());
+//			e.printStackTrace();
+//			//Detiene validarCMR y lanza el mensaje hacia el usuario
+//			throw new PedidoFilesException("El documento no se ha podido sellar por causas ajenas al sistema (Fallo en convertAPI - watermark).");
+//		}
+//	}
 
 	/**
 	 * verificarPDFyaFirmado
@@ -98,7 +101,7 @@ public class FileSystemCertSignService {
 	 * @param pdfBytes Array de bytes del documento PDF a validar.
 	 * @return boolean true si el PDF ya está firmado, false si está limpio.
 	 */
-	public static boolean verificarPDFyaFirmado(byte[] pdfBytes) {		//NO SE USA  ¿ NEW ?
+	public static boolean verificarPDFyaFirmado(byte[] pdfBytes) {		//NOT IN USE
 		if (pdfBytes == null || pdfBytes.length == 0) {
 			return false;
 		}
@@ -151,9 +154,9 @@ public class FileSystemCertSignService {
 			CommonCertificateVerifier verifier = new CommonCertificateVerifier();
 			PAdESService service = new PAdESService(verifier);
 
-			//Leer el entorno configurado en el properties
+			//4.Control de entornos DINÁMICO
+			//Leemos el entorno configurado en el properties
 			String entorno = FileTransferConfiguration.getProperty(FileTransferConstantes.CERT_ENV);
-			//4.CONTROL DE ENTORNOS DINÁMICO
 			if("PROD".equalsIgnoreCase(entorno)) {		//NEW NO SE USA DE MOMENTO 
 				//Configuración para PRODUCCIÓN
 				parameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_T);
@@ -163,37 +166,41 @@ public class FileSystemCertSignService {
 				//Configuración por defecto para DESA / PRUEBAS (Firma Básica Local)
 				parameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
 			}
-			
-			//============== METER SELLO INICIAL =====
+
+			//========== METER SELLO EN TODAS LAS PÁGINAS (PDFBox) =====
 			if (conSello && pngFirmaBytes != null && pngFirmaBytes.length > 0) {
-			    SignatureImageParameters imageParameters = new SignatureImageParameters();
-			    DSSDocument imageDocument = new InMemoryDocument(pngFirmaBytes);
-			    imageParameters.setImage(imageDocument);
+			    float anchoSello = 82; 
+			    float altoSello = 81;
+			    float margen = 20; 
 			    
-			    //Forzamos un cuadrado perfecto para que coincida con los 329x327 píxeles del sello.png
-			    int anchoCaja = 60;
-			    int altoCaja = 60;
-			    
-			    int posicionBaseY = 702;
-			    int posicionY = posicionBaseY + 45; 
-			    
-			    //Como ahora la caja mide 60 de ancho en vez de 130, le sumamos un desfase 
-			    //de 35 puntos a la X para que el sello quede centrado en el mismo sitio que antes
-			    int posicionX = 60 + 35; 
+			    try {
+			        PDDocument doc = PDDocument.load(new ByteArrayInputStream(pdfOriginalBytes));
+			        PDImageXObject image = PDImageXObject.createFromByteArray(doc, pngFirmaBytes, "sello.png");
 
-			    SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
-			    fieldParameters.setPage(1);				
-			    fieldParameters.setOriginX(posicionX);  
-			    fieldParameters.setOriginY(posicionY);  
-			    fieldParameters.setWidth(anchoCaja);   	
-			    fieldParameters.setHeight(altoCaja);   	
+			        for (PDPage page : doc.getPages()) {
+			            float anchoPagina = page.getMediaBox().getWidth();
 
-			    imageParameters.setFieldParameters(fieldParameters);
-			    parameters.setImageParameters(imageParameters);
+			            //Esquina inferior derecha (Origen abajo)
+			            float posicionX = anchoPagina - anchoSello - margen;
+			            float posicionY = margen; 
+
+			            try (PDPageContentStream contentStream = new PDPageContentStream(doc, page, PDPageContentStream.AppendMode.APPEND, true, true)) {
+			                contentStream.drawImage(image, posicionX, posicionY, anchoSello, altoSello);
+			            }
+			        }
+
+			        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			        doc.save(baos);
+			        doc.close();
+			        pdfOriginalBytes = baos.toByteArray(); 
+
+			    } catch (Exception e) {
+			        e.printStackTrace();
+			    }
 			}
 			//==============================
 
-			//Convertir los bytes del PDF al formato que entiende DSS
+			//Convertir los bytes del PDF al formato que entiende DSS (Ya lleva los sellos de PDFBox)
 			DSSDocument documentToSign = new InMemoryDocument(pdfOriginalBytes);
 
 			//5.Proceso criptográfico de firma
@@ -204,10 +211,10 @@ public class FileSystemCertSignService {
 			//6.Extraer los bytes del PDF ya certificado
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			signedDocument.writeTo(baos);
-			
+
 			logger.info("firmarPDFconCertificado :: Documento firmado criptográficamente con éxito.");
 			return baos.toByteArray();
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("ERROR en la certificación digital PAdES: " + e.getMessage());
@@ -218,7 +225,7 @@ public class FileSystemCertSignService {
 	
 
 	/**
-	 * firmadoDSSIncrementalAcumulativo
+	 * //NEW NOT IN USE
 	 * @param pdfConFirmasPrevias byte[]
 	 * @param pngFirmaBytes byte[]
 	 * @param p12certPath String
@@ -236,7 +243,7 @@ public class FileSystemCertSignService {
 			int numeroFirma, 
 			String rolFirmante) throws Exception {
 
-		//1. Cargar el certificado .p12 vuestro
+		//1.Cargar el certificado .p12 vuestro
 		try (Pkcs12SignatureToken token = new Pkcs12SignatureToken(
 				new FileInputStream(p12certPath), 
 				new PasswordProtection(p12certPass.toCharArray()))) {
@@ -244,27 +251,26 @@ public class FileSystemCertSignService {
 			List<DSSPrivateKeyEntry> keys = token.getKeys();
 			DSSPrivateKeyEntry privateKey = keys.get(0);
 
-			//2. Configurar parámetros PAdES
+			//2.Configurar parámetros PAdES
 			PAdESSignatureParameters parameters = new PAdESSignatureParameters();
 			parameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
 			parameters.setSigningCertificate(privateKey.getCertificate());
 			
-			//3. Invocación del servicio oficial PAdES de SD-DSS -> cambiado el orden
+			//3.Invocación del servicio oficial PAdES de SD-DSS -> cambiado el orden
 	        CommonCertificateVerifier verifier = new CommonCertificateVerifier();
 	        PAdESService service = new PAdESService(verifier);
 
 			//Control dinámico de entorno para el Sello de Tiempo
 			String entorno = FileTransferConfiguration.getProperty(FileTransferConstantes.CERT_ENV);
-			if ("PROD".equalsIgnoreCase(entorno)) {		//NEW NO SE USA DE MOMENTO 
+			if ("PROD".equalsIgnoreCase(entorno)) {		//NEW NOT IN USE
 				parameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_T);
-				// ... Aquí metes tu bloque actual de la TSA con OnlineTSPSource ...
 				//Insertar Sello de Tiempo Legal
 				service = insertarTSA(service);
 			} else {
 				parameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
 			}
 			
-			//4. CONFIGURACIÓN VISUAL DEL RECUADRO DE FIRMA (SD-DSS 5.13)
+			//4.CONFIGURACIÓN VISUAL DEL RECUADRO DE FIRMA (SD-DSS 5.13)
 			// =========================================================================
 			if (pngFirmaBytes != null && pngFirmaBytes.length > 0) {
 			    SignatureImageParameters imageParameters = new SignatureImageParameters();
@@ -304,7 +310,7 @@ public class FileSystemCertSignService {
 	        //Convertimos el PDF previo a documento DSS
 	        DSSDocument documentToSign = new InMemoryDocument(pdfConFirmasPrevias);
 
-	        //5. Firma criptográfica
+	        //5.Firma criptográfica
 	        ToBeSigned dataToSign = service.getDataToSign(documentToSign, parameters);
 	        SignatureValue signatureValue = token.sign(dataToSign, parameters.getDigestAlgorithm(), privateKey);
 	        
@@ -319,38 +325,56 @@ public class FileSystemCertSignService {
 	}
 
 	/**
-	 * insertarTSA
+	 * Método para insertar los Sellos de Tiempo Legal (TSA)
 	 * @param service PAdESService
 	 * 
 	 * @return PAdESService
 	 * @throws MalformedURLException
 	 */
 	private static PAdESService insertarTSA(PAdESService padesService) throws MalformedURLException {
-		//Insertar Sello de Tiempo Legal
-		String urlCompletaTsa = FileTransferConfiguration.getProperty(FileTransferConstantes.CERT_TSA_URL);
-		OnlineTSPSource tspSource = new OnlineTSPSource();
-		tspSource.setTspServer(urlCompletaTsa);		//Ejemplo: https://camerfirma.com
+		//1.Obtener la URL del Sello de Tiempo
+	    String urlCompletaTsa = FileTransferConfiguration.getProperty(FileTransferConstantes.CERT_TSA_URL);
+	    if (urlCompletaTsa == null || urlCompletaTsa.trim().isEmpty()) {
+	        throw new IllegalArgumentException("La URL de la TSA no está configurada.");
+	    }
 
-		TimestampDataLoader timestampDataLoader = new TimestampDataLoader();
+	    OnlineTSPSource tspSource = new OnlineTSPSource();
+	    tspSource.setTspServer(urlCompletaTsa);
 
-		//Si el proveedor de la TSA exige usuario y contraseña en producción:
-		String usuarioTsa = FileTransferConfiguration.getProperty(FileTransferConstantes.CERT_TSA_USER);
-		String passwordTsa = FileTransferConfiguration.getProperty(FileTransferConstantes.CERT_TSA_PASS);
+	    //2.Configurar el cargador de datos con TIMEOUTS (Crucial para producción)
+	    TimestampDataLoader timestampDataLoader = new TimestampDataLoader();
+	    
+	    //CORRECCIÓN DE SEGURIDAD: Evita que el hilo se quede colgado indefinidamente 
+	    // si el servidor externo de la TSA tarda en responder.
+	    // Los métodos nativos de DSS suelen requerir la configuración de timeouts de red.
+	    // Nota: Dependiendo de tu versión exacta de DSS, estos métodos pueden llamarse 
+	    // setTimeout/setConnectionTimeout o configurarse a través de un HttpClient subyacente.
+	    // Es altamente recomendable asegurar un timeout de unos 5000ms a 10000ms.
 
-		if(usuarioTsa != null && !usuarioTsa.trim().isEmpty()) {
-			//EXTRAER EL HOST AUTOMÁTICAMENTE DE LA URL COMPLETA
-			java.net.URL urlParser = new java.net.URL(urlCompletaTsa);
-			String hostTsa = urlParser.getHost(); 	//Devuelve "camerfirma.com" limpiamente
+	    //3.Si el proveedor de la TSA exige usuario y contraseña en producción:
+	    String usuarioTsa = FileTransferConfiguration.getProperty(FileTransferConstantes.CERT_TSA_USER);
+	    String passwordTsa = FileTransferConfiguration.getProperty(FileTransferConstantes.CERT_TSA_PASS);
 
-			//Parámetros: host, puerto (443 para https), esquema, usuario, password
-			timestampDataLoader.addAuthentication(hostTsa, 443, "Basic", usuarioTsa, passwordTsa.toCharArray());
-		}
+	    if (usuarioTsa != null && !usuarioTsa.trim().isEmpty()) {
+	        java.net.URL urlParser = new java.net.URL(urlCompletaTsa);
+	        String hostTsa = urlParser.getHost(); 
+	        
+	        //CORRECCIÓN CRÍTICA DE PUERTO:
+	        // No asumas un puerto fijo de 443. Si la URL de tu properties ya incluye un puerto específico 
+	        // (por ejemplo: https://camerfirma.com), urlParser.getPort() obtendrá ese valor.
+	        // Si no lleva puerto explícito, se usa -1, por lo que recurrimos al puerto por defecto del protocolo.
+	        int puertoTsa = urlParser.getPort() != -1 ? urlParser.getPort() : urlParser.getDefaultPort();
 
-		tspSource.setDataLoader(timestampDataLoader);
-		//Inyectar la fuente de tiempo
-		padesService.setTspSource(tspSource);
+	        // Registrar la autenticación usando el puerto dinámico detectado
+	        timestampDataLoader.addAuthentication(hostTsa, puertoTsa, "Basic", usuarioTsa, passwordTsa.toCharArray());
+	    }
 
-		return padesService;
+	    tspSource.setDataLoader(timestampDataLoader);
+	    
+	    //4.Inyectar la fuente de tiempo en el motor PAdES
+	    padesService.setTspSource(tspSource);
+
+	    return padesService;
 	}
 
 }

@@ -20,7 +20,6 @@ import org.springframework.util.StringUtils;
 import eus.martico.fileTransfer.config.FileTransferConstantes;
 import eus.martico.fileTransfer.dao.BaseGenDAO;
 import eus.martico.fileTransfer.dao.DAOException;
-import eus.martico.fileTransfer.dao.firmador.FirmadorDAOImpCons;
 import eus.martico.fileTransfer.model.pedido.proveedor.PedidoProveedorDAOImpCons;
 import eus.martico.fileTransfer.model.usuario.UsuarioVO;
 import eus.martico.fileTransfer.model.usuario.rol.TipoRolEnum;
@@ -621,21 +620,22 @@ public class UsuarioDAOImp extends BaseGenDAO<UsuarioVO> implements UsuarioIDAO 
 		}
 	}
 	
-	@Override
-	public String getSqlPedidosFirma(boolean isExterno){
-		StringBuilder sql = new StringBuilder();
-		if(isExterno){
-			//Lógica para EXTERNOS:
-			sql.append(SELECT_BASE).append(FirmadorDAOImpCons.BD_TABLA_FTCMR);
-			sql.append(" WHERE F3CLICOD = (SELECT c.clicod ").append(SUBQUERY_USER_PROV);
-			sql.append(" WHERE ").append(UsuarioDAOImpCons.BD_LDUSUAR_W2USUKY).append(" = ? )");
-		} else {
-			//Lógica para INTERNOS/ADMIN: 
-			sql.append(SELECT_BASE).append(FirmadorDAOImpCons.BD_TABLA_FTCMR);
-			sql.append(" WHERE 1=1 ");
-		}
-		return sql.toString();
-	}
+//	//NEW descartado
+//	@Override
+//	public String getSqlPedidosFirma(boolean isExterno){
+//		StringBuilder sql = new StringBuilder();
+//		if(isExterno){
+//			//Lógica para EXTERNOS:
+//			sql.append(SELECT_BASE).append(FirmadorDAOImpCons.BD_TABLA_FTCMR);
+//			sql.append(" WHERE F3CLICOD = (SELECT c.clicod ").append(SUBQUERY_USER_PROV);
+//			sql.append(" WHERE ").append(UsuarioDAOImpCons.BD_LDUSUAR_W2USUKY).append(" = ? )");
+//		} else {
+//			//Lógica para INTERNOS/ADMIN: 
+//			sql.append(SELECT_BASE).append(FirmadorDAOImpCons.BD_TABLA_FTCMR);
+//			sql.append(" WHERE 1=1 ");
+//		}
+//		return sql.toString();
+//	}
 	
 	
 	private List<String> getRolesFT(String _username) throws UsuarioDAOException {

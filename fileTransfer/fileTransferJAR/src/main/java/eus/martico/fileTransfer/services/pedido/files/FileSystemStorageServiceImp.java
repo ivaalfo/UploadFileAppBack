@@ -699,45 +699,48 @@ public class FileSystemStorageServiceImp implements FileSystemStorageIService {
 				String completeFnamePDF = fName.concat(".pdf");
 				Path oldPath = Paths.get(rutaCMR);
 				Path pathVALCMRpdf = FileTransferUtils.getNewPath("VAL_CMR", oldPath, completeFnamePDF);
-				String _dirDes = oldPath.getParent()+"/validados/";
 				
 				//Variable común donde depositaremos el PDF listo (con marca de agua) para ser firmado
-				byte[] pdfConMarcaDeAguaBytes = null;
+				byte[] pdfBytes = null;
 				
-				//Guardar ficheros dependiendo de su extensión
-				if(!fExt.toLowerCase().equals("pdf")){
-					//Si no es .pdf viene ya con el sello
-					//Lo transformamos a .pdf
-					byte[] imgConvertidaEnPDF = FileTransferUtils.convertirImagenApdf(_fileReceived[0].getBytes(), fExt);
-					logger.info("validarCMR :: TR:{} :: EXP:{} :: Imagen convertida a PDF.", track, exp);
-					
-					//SAVE IMG_CONVERT.PDF
-					pdfConMarcaDeAguaBytes = imgConvertidaEnPDF;
-					
-				} else {
-					try {
-						//Si es .pdf lo pasamos por 'convertAPI' para poner el sello
-						FileSystemCertSignService.watermarkPDF(rutaCMR, _dirDes);
-						logger.info("validarCMR :: TR:{} :: EXP:{} :: watermarkPDF almacenado.", track, exp);
-					} catch (PedidoFilesException ex){
-						logger.info("ERROR al firmar el documento: " + ex.getMessage());
-						_validate.addError(new ErrorVO(track, "ERROR al firmar el documento"));
-						return _validate;
-					}
-					//Como 'watermarkPDF' lo escribe en disco, leemos sus bytes para poder aplicarle la firma criptográfica
-					Path pathPdfConSelloConvertApi = Paths.get(_dirDes, completeFnamePDF);
-					pdfConMarcaDeAguaBytes = Files.readAllBytes(pathPdfConSelloConvertApi);
-				}
+				//Credenciales de certificación
+				String p12certPath = FileTransferConfiguration.getProperty(FileTransferConstantes.CERT_PATH);
+				String p12certPass = FileTransferConfiguration.getProperty(FileTransferConstantes.CERT_PASS);
 				
 				// =============================================
 				// BLOQUE DE CERTIFICACIÓN CRIPTOGRÁFICA (PAdES)
 				// =============================================
-				logger.info("validarCMR :: TR:{} :: EXP:{} :: Iniciando certificación digital del PDF...", track, exp);
-				String p12certPath = FileTransferConfiguration.getProperty(FileTransferConstantes.CERT_PATH);
-				String p12certPass = FileTransferConfiguration.getProperty(FileTransferConstantes.CERT_PASS);
-
 				try {
-					byte[] pdfCertificadoBytes = FileSystemCertSignService.firmarPDFconCertificado(pdfConMarcaDeAguaBytes, p12certPath, p12certPass, false, null);
+					byte[] pdfCertificadoBytes;
+					logger.info("validarCMR :: TR:{} :: EXP:{} :: Iniciando certificación digital del PDF...", track, exp);
+					
+					//Dependiendo de la extensión
+					if(!fExt.toLowerCase().equals("pdf")){
+						//Lo transformamos a .pdf
+						byte[] imgConvertidaEnPDF = FileTransferUtils.convertirImagenApdf(_fileReceived[0].getBytes(), fExt);
+						logger.info("validarCMR :: TR:{} :: EXP:{} :: Imagen convertida a PDF.", track, exp);
+
+						//Guardamos la imagen convertida en .pdf
+						pdfBytes = imgConvertidaEnPDF;
+
+						//Si no era .pdf ya tiene el sello. Solo firmamos
+						pdfCertificadoBytes = FileSystemCertSignService.firmarPDFconCertificado(pdfBytes, p12certPath, p12certPass, false, null);
+
+					} else {
+						//Si es .pdf leemos sus bytes para poder aplicarle la firma criptográfica
+						Path pathPdf = Paths.get(rutaCMR);
+						pdfBytes = Files.readAllBytes(pathPdf);
+
+						//Si es .pdf hay que ponerle el sello
+						String signFileName = FileTransferConfiguration.getProperty(FileTransferConstantes.SIGN_FILE_NAME);
+						Path signLocation = Paths.get(FileTransferConfiguration.getProperty(FileTransferConstantes.DIR_SIGN_FILE));
+						Path signFilePath = signLocation.resolve(signFileName);
+						byte[] selloOriginalBytes  = Files.readAllBytes(signFilePath);
+
+						//Firmamos + sello
+						pdfCertificadoBytes = FileSystemCertSignService.firmarPDFconCertificado(pdfBytes, p12certPath, p12certPass, true, selloOriginalBytes);
+					}
+
 					//GUARDADO: Guardamos el PDF final firmado y certificado en su ubicación destino
 					FileTransferUtils.storeByteFile(pathVALCMRpdf, pdfCertificadoBytes);
 					logger.info("validarCMR :: TR:{} :: EXP:{} :: PDF Certificado digitalmente y almacenado con éxito.", track, exp);

@@ -144,6 +144,7 @@
 	        <version>2.14.0</version>
 	    </dependency>
 		<!-- https://mvnrepository.com/artifact/com.convertapi.client/convertapi -->
+		<!-- OLD DELETE QUITAR DEPENDENCIA -->
 		<dependency>
 		    <groupId>com.convertapi.client</groupId>
 		    <artifactId>convertapi</artifactId>
@@ -191,6 +192,18 @@
 		    <artifactId>dss-service</artifactId>
 		    <version>5.13</version>
 		</dependency>
+		<!-- Núcleo de ZXing para lógica de QR -->
+	    <dependency>
+	        <groupId>com.google.zxing</groupId>
+	        <artifactId>core</artifactId>
+	        <version>3.5.3</version>
+	    </dependency>
+	    <!-- Extensión de ZXing para generar imágenes (Java SE) -->
+	    <dependency>
+	        <groupId>com.google.zxing</groupId>
+	        <artifactId>javase</artifactId>
+	        <version>3.5.3</version>
+	    </dependency>
 		
 	</dependencies>
 	<build>
