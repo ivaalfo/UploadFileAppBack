@@ -68,8 +68,7 @@ public class PedidosValidadorControllerV1 extends PedidosValidadorServiceImp {
 		MyServiceContext context = MyControlUtils.getServiceContext(_user);
 		
 		ValidateDTO<PedidoFilesVO> validate = new ValidateDTO<PedidoFilesVO>();
-		char charCod = lockType.charAt(0);
-		String codigo = charCod +"TR_" +track.toString();
+		String codigo = "VAL_" +track.toString();
 		if(track.startsWith("GRU") && exp != null){
 			codigo = codigo+"-"+exp;
 		}
@@ -113,8 +112,7 @@ public class PedidosValidadorControllerV1 extends PedidosValidadorServiceImp {
 		MyServiceContext context = MyControlUtils.getServiceContext(_user);
 		
 		ValidateDTO<PedidoFilesVO> validate = new ValidateDTO<PedidoFilesVO>();
-		char charCod = lockType.charAt(0);
-		String codigo = charCod +"TR_" +track.toString();
+		String codigo = "VAL_" +track.toString();
 		if(track.startsWith("GRU") && exp != null){
 			codigo = codigo+"-"+exp;
 		}
@@ -160,8 +158,7 @@ public class PedidosValidadorControllerV1 extends PedidosValidadorServiceImp {
 		MyServiceContext context = MyControlUtils.getServiceContext(_user);
 		
 		ValidateDTO<PedidoFilesVO> validate = new ValidateDTO<PedidoFilesVO>();
-		char charCod = lockType.charAt(0);
-		String codigo = charCod +"TR_" +track.toString();
+		String codigo = "VAL_" +track.toString();
 		if(track.startsWith("GRU") && exp != null){
 			codigo = codigo+"-"+exp;
 		}

@@ -80,7 +80,7 @@ public class FileTransferConstantes {
 	
 	//Codigos Bloqueos
 	public static final String BLOQ_VALIDADOR	= "VALIDADOR";
-	public static final String BLOQ_FIRMADOR	= "FIRMADOR";
+//	public static final String BLOQ_FIRMADOR	= "FIRMADOR";	//OLD descartado
 	
 	public static final byte ORDEN_ASCENDENTE = 1;
 	public static final byte ORDEN_DESCENDENTE = -1;

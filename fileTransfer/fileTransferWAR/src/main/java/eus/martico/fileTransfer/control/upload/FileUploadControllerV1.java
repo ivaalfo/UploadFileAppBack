@@ -194,9 +194,9 @@ public class FileUploadControllerV1 {
 		if(lockType.equalsIgnoreCase(FileTransferConstantes.BLOQ_VALIDADOR)){
 			bloqCod = "VAL_";
 		}
-		if(lockType.equalsIgnoreCase(FileTransferConstantes.BLOQ_FIRMADOR)){
-			bloqCod = "FIR_";
-		}
+//		if(lockType.equalsIgnoreCase(FileTransferConstantes.BLOQ_FIRMADOR)){
+//			bloqCod = "FIR_";
+//		}
 		String codigo = bloqCod +_pedidoTrack.toString();
 		if(_pedidoTrack.startsWith("GRU") && _pedidoExp != null){
 			codigo = codigo+"-"+_pedidoExp;
@@ -236,9 +236,9 @@ public class FileUploadControllerV1 {
 		if(lockType.equalsIgnoreCase(FileTransferConstantes.BLOQ_VALIDADOR)){
 			bloqCod = "VAL_";
 		}
-		if(lockType.equalsIgnoreCase(FileTransferConstantes.BLOQ_FIRMADOR)){
-			bloqCod = "FIR_";
-		}
+//		if(lockType.equalsIgnoreCase(FileTransferConstantes.BLOQ_FIRMADOR)){
+//			bloqCod = "FIR_";
+//		}
 		String codigo = bloqCod +_pedidoTrack.toString();
 		if(_pedidoTrack.startsWith("GRU") && _pedidoExp != null){
 			codigo = codigo+"-"+_pedidoExp;

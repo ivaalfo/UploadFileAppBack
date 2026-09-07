@@ -49,9 +49,9 @@ public class BloqueoControllerV1 {
 				if(_tipo.equalsIgnoreCase(FileTransferConstantes.BLOQ_VALIDADOR)){
 					prefix = "VAL_";
 				}
-				if(_tipo.equalsIgnoreCase(FileTransferConstantes.BLOQ_FIRMADOR)){
-					prefix = "FIR_";
-				}
+//				if(_tipo.equalsIgnoreCase(FileTransferConstantes.BLOQ_FIRMADOR)){
+//					prefix = "FIR_";
+//				}
 				codigo = prefix + track.toString();
 				
 				if(track.startsWith("GRU") && exp != null){
@@ -79,9 +79,9 @@ public class BloqueoControllerV1 {
 				if(_tipo.equalsIgnoreCase(FileTransferConstantes.BLOQ_VALIDADOR)){
 					prefix = "VAL_";
 				}
-				if(_tipo.equalsIgnoreCase(FileTransferConstantes.BLOQ_FIRMADOR)){
-					prefix = "FIR_";
-				}
+//				if(_tipo.equalsIgnoreCase(FileTransferConstantes.BLOQ_FIRMADOR)){
+//					prefix = "FIR_";
+//				}
 				codigo = prefix + track.toString();
 				if(track.startsWith("GRU") && exp != null){
 					codigo = codigo+"-"+exp;
@@ -108,9 +108,9 @@ public class BloqueoControllerV1 {
 				if(_tipo.equalsIgnoreCase(FileTransferConstantes.BLOQ_VALIDADOR)){
 					prefix = "VAL_";
 				}
-				if(_tipo.equalsIgnoreCase(FileTransferConstantes.BLOQ_FIRMADOR)){
-					prefix = "FIR_";
-				}
+//				if(_tipo.equalsIgnoreCase(FileTransferConstantes.BLOQ_FIRMADOR)){
+//					prefix = "FIR_";
+//				}
 				codigo = prefix + track.toString();
 				if(track.startsWith("GRU") && exp != null){
 					codigo = codigo+"-"+exp;
