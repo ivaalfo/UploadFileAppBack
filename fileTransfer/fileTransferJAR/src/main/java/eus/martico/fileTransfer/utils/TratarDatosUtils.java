@@ -11,6 +11,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +23,7 @@ import eus.martico.fileTransfer.dao.pedido.files.PedidoFilesException;
 import eus.martico.fileTransfer.dao.pedido.files.PedidoFilesIDAO;
 import eus.martico.fileTransfer.dao.usuario.UsuarioDAOException;
 import eus.martico.fileTransfer.dao.usuario.UsuarioIDAO;
-import eus.martico.fileTransfer.model.firma.PedidoFirmadorVO;
+//import eus.martico.fileTransfer.model.firma.PedidoFirmadorVO;
 import eus.martico.fileTransfer.model.pedido.factura.PedidoFacturaDAOImpMapper;
 import eus.martico.fileTransfer.model.pedido.factura.PedidoFacturaVO;
 import eus.martico.fileTransfer.model.pedido.files.PedidoFilesVO;
@@ -38,9 +40,21 @@ import eus.martico.fileTransfer.model.pedido.proveedor.PedidoProveedorVO;
 public class TratarDatosUtils {
 	
 	protected static final Logger logger = LoggerFactory.getLogger(TratarDatosUtils.class);
+
+	//Compilamos los patrones una sola vez para rendimiento máximo
+    //Grupo 1, 2 y 3: Europeo (DD, MM, YYYY) -> ej: 20.07.2026 o 24/08/2026
+    private static final Pattern PATRON_EUROPEO = Pattern.compile("(\\d{2})[\\.-/](\\d{2})[\\.-/](\\d{4})");
+    //Grupo 1, 2 y 3: ISO (YYYY, MM, DD) -> ej: 2026-08-26
+    private static final Pattern PATRON_ISO = Pattern.compile("(\\d{4})[\\.-/](\\d{2})[\\.-/](\\d{2})");
+
 	
-	
-	
+	//Constante estática para el formateador de fechas
+    private static final DateTimeFormatter FORMATEADOR_CORTE = new DateTimeFormatterBuilder()
+        .appendOptional(DateTimeFormatter.ofPattern("dd-MM-yyyy"))
+        .appendOptional(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+        .toFormatter();
+    
+    
 	/**
 	 * tratarDuplicados
 	 * @param listaOriginal
@@ -172,6 +186,27 @@ public class TratarDatosUtils {
 			pedido.setFechaSubidaFAC(null);
 			pedido.setFechaSubidaCMRcompleta(null);
 		}
+	}
+	
+	/**
+     * tratarFechasCargaDescarga
+     * Extrae la fecha, la homogeneiza al patrón 'DD-MM-YYYY' y limpia el resto del string.
+	 * @param pedido
+	 * @throws PedidoFilesException
+	 */
+	public static void tratarFechasCargaDescarga(PedidoProveedorVO pedido) throws PedidoFilesException {
+		if (pedido == null) {
+			return;
+		}
+
+		//Procesamos Fecha de Carga
+        if (pedido.getFechaCarga() != null && !pedido.getFechaCarga().trim().isEmpty()) {
+            pedido.setFechaCarga(formatearFechas(pedido.getFechaCarga().trim()));
+        }
+        //Procesar Fecha de Descarga
+        if (pedido.getFechaDescarga() != null && !pedido.getFechaDescarga().trim().isEmpty()) {
+            pedido.setFechaDescarga(formatearFechas(pedido.getFechaDescarga().trim()));
+        }
 	}
 	
 	/**
@@ -352,7 +387,16 @@ public class TratarDatosUtils {
 				continue;
 			}
 			
-			if(pedido.isGrupaje() && pedido.getEstado() != 9) {		//Los anulados siempre se mantienen
+			//Salvaguarda para los grulogs de 10centimos
+			if(pedido.getHasCMR() == 7 && pedido.getHasFAC() == 5 && pedido.getFechaSubidaFAC().toString().equals("0001-01-01")){
+				Long estFAC = Long.valueOf(FileTransferConstantes.ESTADO_7_FICH_SIN_DOC);
+				pedidoFilesDAO.updateEstados(pedido.getTrack(), pedido.getExpediente(), pedido.getHasCMR(), estFAC, pedido.getEstado());
+				//Lo actualizamos en memoria
+				pedido.setHasFAC(estFAC);
+			}
+			
+			//Los anulados siempre se mantienen
+			if(pedido.isGrupaje() && pedido.getEstado() != 9) {
 				String currentGrupTR = pedido.getGrupTR();
 				
 				//¿Queda algún CMR sin validar en el grupo?
@@ -371,7 +415,7 @@ public class TratarDatosUtils {
 							Long estadoGEN = Long.valueOf(FileTransferConstantes.ESTADO_2_FICH_VALIDADO);
 							pedidoFilesDAO.updateEstados(pedido.getTrack(), pedido.getExpediente(), estCMR, estFAC, estadoGEN);
 							//Lo actualizamos en memoria
-							pedido.setEstado(Long.valueOf(FileTransferConstantes.ESTADO_2_FICH_VALIDADO));
+							pedido.setEstado(estadoGEN);
 						}
 					}
 					//Si el grupo está validado, el pedido se queda en la lista (no hacemos it.remove)
@@ -506,20 +550,33 @@ public class TratarDatosUtils {
 	}
 	
 	/**
-	 * obtenerProvNameDestName
-	 * @param pedido PedidoFirmadorVO
-	 * @param usuarioDAO UsuarioIDAO
-	 * @throws UsuarioDAOException
+	 * obtenerFacAmount
+	 * @param pedido PedidoProveedorVO
+	 * @param template JdbcTemplate
 	 */
-	public static void obtenerProvNameDestName(PedidoFirmadorVO pedido, UsuarioIDAO usuarioDAO) 
-			throws UsuarioDAOException {
-		//Obtener Trasportista
-		String trasName = usuarioDAO.getProvByCLICOD(pedido.getF3cliCod());
-		pedido.setProvUser(trasName);
+	public static void obtenerFacAmount(PedidoProveedorVO pedido, JdbcTemplate template) {
+		String track = pedido.getTrack();
 		
-		//Obtener Destinatario
-		String destName = usuarioDAO.getProvByCLICOD(pedido.getF3destCod());
-		pedido.setDestUser(destName);
+		//Extrae el importe de factura 
+		String sqlSelectFacAmountNoConta = "SELECT distinct TOTAL_BRUTO from FAIMPINV where DOCCOMMENT = ?";
+		
+		if(track != null){
+			Double totalBruto;
+			//Buscamos en las NO contabilizadas que es el unico sitio en que tengo los importes
+			try {
+	            totalBruto = template.queryForObject(sqlSelectFacAmountNoConta, Double.class, track);
+	        //} catch (EmptyResultDataAccessException e) {
+			} catch (Exception ex) {
+	            //Si la consulta devuelve 0 filas
+	            totalBruto = null;
+	        }
+
+			if(totalBruto != null){
+				pedido.setFacAmount(totalBruto);
+			} else {
+				pedido.setFacAmount(null);
+			}
+		}
 	}
 	
 	/**
@@ -547,7 +604,7 @@ public class TratarDatosUtils {
 	/**
 	 * normalizarFechaCarga
 	 * @param fechaRaw
-	 * @return
+	 * @return LocalDate
 	 */
 	private static LocalDate normalizarFechaCarga(String fechaRaw) {
 		if(fechaRaw == null || fechaRaw.isEmpty()) return null;
@@ -558,17 +615,43 @@ public class TratarDatosUtils {
 					.replace('.', '-')
 					.replace('/', '-');
 			
-			//Definir los formatos posibles
-			DateTimeFormatter formatter = new DateTimeFormatterBuilder()
-					.appendOptional(DateTimeFormatter.ofPattern("dd-MM-yyyy"))
-					.appendOptional(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
-					.toFormatter();
-			
-			return LocalDate.parse(limpia, formatter);
+			return LocalDate.parse(limpia, FORMATEADOR_CORTE);
 		} catch (Exception e) {
 			//Si falla el parseo, devolvemos null para que el pedido no se descarte
 			return null;
 		}
 	}
 
+	/**
+     * Método privado de soporte para unificar el formato a DD-MM-YYYY
+     */
+    private static String formatearFechas(String fechaRaw) {
+    	
+    	//SALVAGUARDA DIRECTA PARA ISO: Si mide 10 caracteres y tiene la estructura YYYY-MM-DD
+        //Evitamos por completo cualquier fallo sutil del Matcher de Regex
+        if (fechaRaw.length() >= 10 && fechaRaw.charAt(4) == '-' && fechaRaw.charAt(7) == '-') {
+            String[] partes = fechaRaw.substring(0, 10).split("-");
+            if (partes.length == 3) {
+                return partes[2] + "-" + partes[1] + "-" + partes[0]; //Retorna DD-MM-YYYY
+            }
+        }
+    	
+        //Primero buscamos si contiene un formato Europeo
+        Matcher matchEuro = PATRON_EUROPEO.matcher(fechaRaw);
+        if (matchEuro.find()) {
+            //Reconstruimos sustituyendo cualquier separador (. o /) por guiones obligatoriamente
+            return matchEuro.group(1) + "-" + matchEuro.group(2) + "-" + matchEuro.group(3);
+        }
+
+        //Si no, buscamos si contiene un formato ISO
+        Matcher matchIso = PATRON_ISO.matcher(fechaRaw);
+        if (matchIso.find()) {
+            //Reordenamos las piezas: Grupo 3 (DD) - Grupo 2 (MM) - Grupo 1 (YYYY)
+            return matchIso.group(3) + "-" + matchIso.group(2) + "-" + matchIso.group(1);
+        }
+
+        //Si es un texto libre sin ninguna estructura de fecha reconocible (ej: "PENDIENTE"), se limpia y se devuelve
+        return fechaRaw.trim();
+    }
+    
 }

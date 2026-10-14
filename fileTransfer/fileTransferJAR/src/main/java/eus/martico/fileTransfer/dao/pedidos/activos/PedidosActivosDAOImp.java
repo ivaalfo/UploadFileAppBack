@@ -122,7 +122,7 @@ public class PedidosActivosDAOImp extends BaseGenDAO<PedidoProveedorVO> implemen
 		logger.info("insertFecREAL :: REFPED: {} : ESTADO: {} : FECENT: {}", _pedidoF.getRefPed(), _pedidoF.getEstadoFacturacion(), _pedidoF.getFechaEntReal());
 		
 		try {
-			//chapuzas varias: W2USUARIO precision 40; F1USECMR, F1USEFAC, F1USEOTR, todos precision 10
+			//CHAPUZAS HEREDADAS VARIAS: W2USUARIO precision 40; F1USECMR, F1USEFAC, F1USEOTR, todos precision 10
 			final String usuFTarchi;
 			if(_pedidoF.getUsuSubidaCMR().length()>10){
 				usuFTarchi = _pedidoF.getUsuSubidaCMR().substring(0, 10);
@@ -247,7 +247,7 @@ public class PedidosActivosDAOImp extends BaseGenDAO<PedidoProveedorVO> implemen
 	}
 	
 	@Override
-	public List<PedidoProveedorVO> getPedidosFiltrados(MyServiceContext _context, String _expCod, String _provName, String _track, String _refCharge) 
+	public List<PedidoProveedorVO> getPedidosFiltrados(MyServiceContext _context, String _expCod, String _provName, String _track, String _refCharge, String _fecDesde, String _fecHasta) 
 			throws PedidosActivosException, PedidoFilesException {
 		//UPPER ACUMULATIVE DYNAMIC FILTER
 		try{
@@ -317,6 +317,16 @@ public class PedidosActivosDAOImp extends BaseGenDAO<PedidoProveedorVO> implemen
 				infoLog.append(" :: byRefCarga:"+_refCharge);
 			}
 			
+			//Filtro F.Entrega.Real - Desde/Hasta - Disponible para todo tipo de user
+			if(_fecDesde != null && !_fecDesde.isEmpty() && _fecHasta != null && !_fecHasta.isEmpty()){
+				sqlSelectMttoPA.append(" AND " +PedidoProveedorDAOImpCons.BD_FCTPDNPRV_FECREAL+ " BETWEEN ? AND ? ");
+				String fDesdeTimeStamp = _fecDesde.trim() + " 00:00:00.000000";
+				String fHastaTimeStamp = _fecHasta.trim() + " 23:59:59.000000";
+				params.add(fDesdeTimeStamp);
+				params.add(fHastaTimeStamp);
+				infoLog.append(" :: byFecRealDesde:" + _fecDesde + " Hasta:" + _fecHasta);
+			}
+			
 			//3.FINAL COMUN
 			sqlSelectMttoPA.append(" AND (").append(condicionEstadosActivos).append(") ");
 			sqlSelectMttoPA.append(condicionOrderActivos);
@@ -351,6 +361,7 @@ public class PedidosActivosDAOImp extends BaseGenDAO<PedidoProveedorVO> implemen
 			TratarDatosUtils.tratarOrigenDestino(pedido);
 			TratarDatosUtils.tratarProvUser(pedido, cachePActiv, this.usuarioDAO);
 			TratarDatosUtils.tratarGrupajesInicio(pedido);
+			TratarDatosUtils.tratarFechasCargaDescarga(pedido);
 			
 			PedidoFilesVO pFiles = pedidoFilesDAO.getPedidoFiles(pedido.getTrack(), pedido.getExpediente());
 			TratarDatosUtils.tratarMotRechazo(pedido, pFiles);			

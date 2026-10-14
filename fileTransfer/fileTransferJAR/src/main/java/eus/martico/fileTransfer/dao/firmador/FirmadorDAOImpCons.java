@@ -3,7 +3,7 @@
 //import eus.martico.fileTransfer.dao.BaseDAOCons;
 //
 ///**
-// * NEW descartado
+// * XXX descartado firmador
 // * @author Martico S.L. :: ialfonso
 // * @version 1.0
 // * @see https://www.martico.es/

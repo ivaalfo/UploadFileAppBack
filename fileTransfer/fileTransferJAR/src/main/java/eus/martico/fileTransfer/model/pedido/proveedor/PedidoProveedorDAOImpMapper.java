@@ -22,10 +22,8 @@ public class PedidoProveedorDAOImpMapper implements RowMapper<PedidoProveedorVO>
 		PedidoProv.setProveedor(SqlUtils.getStringTrim(rs, PedidoProveedorDAOImpCons.BD_FCTPDNPRV_PROVEEDOR));
 		PedidoProv.setTrack(SqlUtils.getStringTrim(rs, PedidoProveedorDAOImpCons.BD_FCTPDNPRV_TR));
 		PedidoProv.setExpediente(SqlUtils.getStringTrim(rs, PedidoProveedorDAOImpCons.BD_FCTPDNPRV_EXPEDIENTE));
-//		PedidoProv.setFechaCarga(SqlUtils.getLocalDateFromRs(rs, PedidoProveedorDAOImpCons.BD_FCTPDNPRV_FCARGA));
 		PedidoProv.setFechaCarga(SqlUtils.getStringTrim(rs, PedidoProveedorDAOImpCons.BD_FCTPDNPRV_FCARGA));
 		PedidoProv.setRefCarga(SqlUtils.getStringTrim(rs, PedidoProveedorDAOImpCons.BD_FCTPDNPRV_RCARGA));
-//		PedidoProv.setFechaDescarga(SqlUtils.getLocalDateFromRs(rs, PedidoProveedorDAOImpCons.BD_FCTPDNPRV_FDESCARGA));
 		PedidoProv.setFechaDescarga(SqlUtils.getStringTrim(rs, PedidoProveedorDAOImpCons.BD_FCTPDNPRV_FDESCARGA));
 		PedidoProv.setRefDescarga(SqlUtils.getStringTrim(rs, PedidoProveedorDAOImpCons.BD_FCTPDNPRV_RDESCARGA));
 		PedidoProv.setOrigen(SqlUtils.getStringTrim(rs, PedidoProveedorDAOImpCons.BD_FCTPDNPRV_ORIGEN));

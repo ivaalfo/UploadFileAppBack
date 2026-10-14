@@ -20,6 +20,6 @@ public interface PedidosValidadorIDAO {
 	ValidateDTO<PedidoFilesVO> updateAnotaciones(MyServiceContext _context, String _pedidoTrack, String _pedidoExp, String _anotacion) 
 			throws PedidoFilesException;
 
-	List<PedidoProveedorVO> getPedidosFiltrados(MyServiceContext _context, String _expCod, String _provName, String _track, String _refCharge) 
+	List<PedidoProveedorVO> getPedidosFiltrados(MyServiceContext _context, String _expCod, String _provName, String _track, String _refCharge, String _fecDesde, String _fecHasta) 
 			throws PedidosValidadorException, PedidoFilesException;
 }

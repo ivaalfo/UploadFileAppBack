@@ -10,7 +10,7 @@
 //import javax.ejb.TimerService;
 //
 //@Stateless
-//public class MyTimerEjb3 implements MyITimer {		//OLD DELETE
+//public class MyTimerEjb3 implements MyTimer {		//OLD NOT IN USE
 //	/**
 //	 * Default constructor.
 //	 */

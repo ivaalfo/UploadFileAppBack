@@ -145,11 +145,11 @@
 	    </dependency>
 		<!-- https://mvnrepository.com/artifact/com.convertapi.client/convertapi -->
 		<!-- OLD DELETE QUITAR DEPENDENCIA -->
-		<dependency>
-		    <groupId>com.convertapi.client</groupId>
-		    <artifactId>convertapi</artifactId>
-		    <version>2.13</version>
-		</dependency>
+<!-- 		<dependency> -->
+<!-- 		    <groupId>com.convertapi.client</groupId> -->
+<!-- 		    <artifactId>convertapi</artifactId> -->
+<!-- 		    <version>2.13</version> -->
+<!-- 		</dependency> -->
 		<!-- librería open-source Apache PDFBox -->
 		<dependency>
 		    <groupId>org.apache.pdfbox</groupId>

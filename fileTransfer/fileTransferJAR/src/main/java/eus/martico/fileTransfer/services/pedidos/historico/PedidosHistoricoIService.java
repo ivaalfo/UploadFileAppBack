@@ -36,11 +36,13 @@ public interface PedidosHistoricoIService {
 	 * @param _track String
 	 * @param _facNum String
 	 * @param refCharge String
+	 * @param fecHasta String
+	 * @param fecDesde String
 	 * @return List<PedidoProveedorVO>
 	 * @throws PedidosHistoricoServiceException
 	 * @throws PedidoFilesException
 	 */
-	List<PedidoProveedorVO> getPedidosFiltrados(MyServiceContext _context, String _expCod, String _provName, String _track,	String _facNum, String refCharge) 
+	List<PedidoProveedorVO> getPedidosFiltrados(MyServiceContext _context, String _expCod, String _provName, String _track,	String _facNum, String refCharge, String fecDesde, String fecHasta) 
 			throws PedidosHistoricoServiceException, PedidoFilesException;
 	
 }

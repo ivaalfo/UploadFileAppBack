@@ -55,10 +55,12 @@ public class PedidosHistoricoControllerV1 extends PedidosHistoricoServiceImp {
 	        @RequestParam(required=false) String provName,
 	        @RequestParam(required=false) String trFilterValue,
 	        @RequestParam(required=false) String facNum,
-	        @RequestParam(required=false) String refCharge)
+	        @RequestParam(required=false) String refCharge,
+	        @RequestParam(required=false) String fecDesde,
+	        @RequestParam(required=false) String fecHasta)
 	        		throws PedidosHistoricoServiceException, PedidoFilesException {
 		MyServiceContext context = MyControlUtils.getServiceContext(user);
-		return pedidosHistoricoService.getPedidosFiltrados(context, expediente, provName, trFilterValue, facNum, refCharge);
+		return pedidosHistoricoService.getPedidosFiltrados(context, expediente, provName, trFilterValue, facNum, refCharge, fecDesde, fecHasta);
 	}
 	
 	@ExceptionHandler(PedidosHistoricoServiceException.class)

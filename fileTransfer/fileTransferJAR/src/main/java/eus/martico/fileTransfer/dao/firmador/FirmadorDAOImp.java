@@ -35,7 +35,7 @@
 //import eus.martico.fileTransfer.utils.TratarDatosUtils;
 //
 ///**
-// * NEW descartado
+// * XXX descartado firmador
 // * @author Martico S.L. :: ialfonso
 // * @version 1.0
 // * @see https://www.martico.es/

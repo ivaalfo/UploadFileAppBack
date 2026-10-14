@@ -42,10 +42,10 @@ public class PedidosValidadorServiceImp implements PedidosValidadorIService {
 	}
 
 	@Override
-	public List<PedidoProveedorVO> getPedidosFiltrados(MyServiceContext _context, String _expCod, String _provName, String _track, String _refCharge) 
+	public List<PedidoProveedorVO> getPedidosFiltrados(MyServiceContext _context, String _expCod, String _provName, String _track, String _refCharge, String _fecDesde, String _fecHasta) 
 			throws PedidosValidadorServiceException, PedidoFilesException {
 		try {
-			return pedidoValidadorDAO.getPedidosFiltrados(_context, _expCod, _provName, _track, _refCharge);
+			return pedidoValidadorDAO.getPedidosFiltrados(_context, _expCod, _provName, _track, _refCharge, _fecDesde, _fecHasta);
 		} catch (PedidosValidadorException e) {
 			throw new PedidosValidadorServiceException(e.getMessage());
 		}

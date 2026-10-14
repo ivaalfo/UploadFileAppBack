@@ -35,11 +35,13 @@ public interface PedidosHistoricoIDAO {
 	 * @param _track String
 	 * @param _facNum String
 	 * @param _refCharge String
+	 * @param _fecHasta String
+	 * @param _fecDesde String
 	 * @return List<PedidoProveedorVO>
 	 * @throws PedidosHistoricoException
 	 * @throws PedidoFilesException
 	 */
-	List<PedidoProveedorVO> getPedidosFiltrados(MyServiceContext _context, String _expCod, String _provName, String _track, String _facNum, String _refCharge) 
+	List<PedidoProveedorVO> getPedidosFiltrados(MyServiceContext _context, String _expCod, String _provName, String _track, String _facNum, String _refCharge, String _fecDesde, String _fecHasta) 
 			throws PedidosHistoricoException, PedidoFilesException;
 
 	

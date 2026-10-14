@@ -74,7 +74,7 @@ public class PedidosActivosControllerV1 extends PedidosActivosServiceImp {
 	}
 	
 	@RequestMapping(method = RequestMethod.PUT, path="/putFecRealMultiple")
-	public @ResponseBody() Integer seFecRealGrup(
+	public @ResponseBody() Integer setFecRealGrup(
 			@AuthenticationPrincipal final SegurUser _user,
 			@RequestBody PedidoGrupajeFechasVO request) throws PedidoFilesException {
 		
@@ -118,10 +118,12 @@ public class PedidosActivosControllerV1 extends PedidosActivosServiceImp {
 			@RequestParam(required=false) String expediente,
 			@RequestParam(required=false) String provName,
 			@RequestParam(required=false) String trFilterValue,
-			@RequestParam(required=false) String refCharge)	throws PedidosActivosServiceException, PedidoFilesException {
-		
+			@RequestParam(required=false) String refCharge,
+			@RequestParam(required=false) String fecDesde,
+	        @RequestParam(required=false) String fecHasta)	
+	        		throws PedidosActivosServiceException, PedidoFilesException {
 		MyServiceContext context = MyControlUtils.getServiceContext(user);
-		return pedidosActivosService.getPedidosFiltrados(context, expediente, provName, trFilterValue, refCharge);
+		return pedidosActivosService.getPedidosFiltrados(context, expediente, provName, trFilterValue, refCharge, fecDesde, fecHasta);
 	}
 
 	@ExceptionHandler(PedidosActivosServiceException.class)

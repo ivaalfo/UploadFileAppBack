@@ -8,7 +8,6 @@ import java.net.MalformedURLException;
 //import java.nio.file.Paths;
 import java.security.KeyStore.PasswordProtection;
 import java.util.List;
-//import java.util.concurrent.ExecutionException;
 
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -18,10 +17,6 @@ import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-//import com.convertapi.client.Config;
-//import com.convertapi.client.ConvertApi;
-//import com.convertapi.client.Param;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -42,7 +37,6 @@ import eus.martico.fileTransfer.config.FileTransferConfiguration;
 import eus.martico.fileTransfer.config.FileTransferConstantes;
 import eus.martico.fileTransfer.dao.pedido.files.PedidoFilesException;
 import eus.martico.fileTransfer.services.pedido.files.FileSystemStorageServiceImp;
-//import eus.martico.fileTransfer.utils.FileTransferUtils;
 
 /**
  * 
@@ -54,45 +48,8 @@ import eus.martico.fileTransfer.services.pedido.files.FileSystemStorageServiceIm
 public class FileSystemCertSignService {
 
 	protected static final Logger logger = LoggerFactory.getLogger(FileSystemStorageServiceImp.class);
-
-//	/**
-//	 * Image PDF Watermark - ConvertApi		//OLD DELETE convertAPI
-//	 * @param _pathOr String
-//	 * @param _dirDes String
-//	 * 
-//	 * @throws IOException
-//	 * @throws PedidoFilesException 
-//	 */
-//	public static void watermarkPDF(String _pathOr, String _dirDes) throws IOException, PedidoFilesException {
-//		//String tokenFreeTrial = FileTransferConfiguration.getProperty(FileTransferConstantes.CONVERT_API_TK_FREE);
-//		String tokenProd = FileTransferConfiguration.getProperty(FileTransferConstantes.CONVERT_API_TK_PROD);
-//		Config.setDefaultApiCredentials(tokenProd);
-//
-//		String signFileName = FileTransferConfiguration.getProperty(FileTransferConstantes.SIGN_FILE_NAME);
-//		Path signFilePath = FileTransferUtils.signLocation.resolve(signFileName);
-//
-//		try {
-//			ConvertApi.convert("pdf", "image-watermark",
-//					new Param("File", Paths.get(_pathOr)),							//Paths.get("/path/to/my_file.pdf"))
-//					new Param("ImageFile", Paths.get(signFilePath.toString())),		//Paths.get("/path/to/selloA.png")
-//					new Param("Style", "stamp"),
-//					new Param("GoToLink", "https://www.martico.es/"),
-//					new Param("PageRotation", "true"),
-//					new Param("PageBox", "cropbox"),		//mediabox, trimbox, bleedbox, cropbox, 
-//					new Param("HorizontalAlignment", "right"),
-//					new Param("VerticalAlignment", "bottom"),
-//					new Param("Scale", "321")
-//					).get().saveFilesSync(Paths.get(_dirDes));			//Paths.get("/path/to/result/dir")
-//
-//			logger.info("watermarkPDF :: "+_pathOr);
-//
-//		} catch (InterruptedException | ExecutionException e) {
-//			logger.error("ERROR al sellar el documento: " + e.getMessage());
-//			e.printStackTrace();
-//			//Detiene validarCMR y lanza el mensaje hacia el usuario
-//			throw new PedidoFilesException("El documento no se ha podido sellar por causas ajenas al sistema (Fallo en convertAPI - watermark).");
-//		}
-//	}
+	
+	
 
 	/**
 	 * verificarPDFyaFirmado
@@ -157,7 +114,7 @@ public class FileSystemCertSignService {
 			//4.Control de entornos DINÁMICO
 			//Leemos el entorno configurado en el properties
 			String entorno = FileTransferConfiguration.getProperty(FileTransferConstantes.CERT_ENV);
-			if("PROD".equalsIgnoreCase(entorno)) {		//NEW NO SE USA DE MOMENTO 
+			if("PROD".equalsIgnoreCase(entorno)) {		//NEW NOT IN USE 
 				//Configuración para PRODUCCIÓN
 				parameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_T);
 				//Insertar Sello de Tiempo Legal

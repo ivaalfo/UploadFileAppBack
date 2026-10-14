@@ -97,7 +97,7 @@ public class UsuarioServiceImp implements UsuarioIService {
 				_usuario.setW2usuky(maxW2usuky + 1);
 				_usuario.setW3usuky(maxW2usuky + 1);
 				
-				//chapuzas varias: W2USUARIO precision 40; W2USCR, W2USCA, precision 10
+				//CHAPUZAS HEREDADAS VARIAS: W2USUARIO precision 40; W2USCR, W2USCA, precision 10
 				final String w2uscr10;
 				final String w2usca10;
 				if(_usuario.getW2uscr().length()>10){
@@ -157,7 +157,7 @@ public class UsuarioServiceImp implements UsuarioIService {
 
 			UsuarioVO userUpdate;
 			try {
-				//chapuzas varias: W2USUARIO precision 40; W2USCR, W2USCA, precision 10
+				//CHAPUZAS HEREDADAS VARIAS: W2USUARIO precision 40; W2USCR, W2USCA, precision 10
 				final String w2uscr10;
 				final String w2usca10;
 				if(_usuario.getW2uscr().length()>10){

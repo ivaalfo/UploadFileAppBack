@@ -35,20 +35,17 @@ public class PedidoProveedorVO extends BaseBDVO implements Serializable {
 	private String proveedorUser;
 	
 	private String facNumber;
+	private Double facAmount;
 	
 	private String track;
 	private String expediente;
 	
-//	@JsonInclude(JsonInclude.Include.NON_NULL)
-//	@JsonFormat(pattern=FileTransferConstantes.JSON_DATE_FORMAT)
-//	private LocalDate fechaCarga;
-	private String fechaCarga;				//De momento STRING
+	//CHAPUZAS HEREDADAS VARIAS: F_CARGA de tipo CHARACTER en FCTPDNPRV
+	private String fechaCarga;
 	private String refCarga;
 	
-//	@JsonInclude(JsonInclude.Include.NON_NULL)
-//	@JsonFormat(pattern=FileTransferConstantes.JSON_DATE_FORMAT)
-//	private LocalDate fechaDescarga;
-	private String fechaDescarga;			//De momento STRING
+	//CHAPUZAS HEREDADAS VARIAS: F_DESCARGA de tipo CHARACTER en FCTPDNPRV
+	private String fechaDescarga;
 	private String refDescarga;
 	
 	private String origen;
@@ -138,6 +135,12 @@ public class PedidoProveedorVO extends BaseBDVO implements Serializable {
 	public void setFacNumber(String facNumber) {
 		this.facNumber = facNumber;
 	}
+	public Double getFacAmount() {
+		return facAmount;
+	}
+	public void setFacAmount(Double facAmount) {
+		this.facAmount = facAmount;
+	}
 	
 	public String getExpediente() {
 		return expediente;
@@ -146,13 +149,7 @@ public class PedidoProveedorVO extends BaseBDVO implements Serializable {
 		this.expediente = expediente;
 	}
 	
-//	@JsonFormat(pattern=FileTransferConstantes.JSON_DATE_FORMAT)
-//	public LocalDate getFechaCarga() {
-//		return fechaCarga;
-//	}
-//	public void setFechaCarga(LocalDate fechaCarga) {
-//		this.fechaCarga = fechaCarga;
-//	}
+	//CHAPUZAS HEREDADAS VARIAS: F_CARGA tipo CHARACTER en FCTPDNPRV
 	public String getFechaCarga() {
 		return fechaCarga;
 	}
@@ -166,13 +163,8 @@ public class PedidoProveedorVO extends BaseBDVO implements Serializable {
 	public void setRefCarga(String refCarga) {
 		this.refCarga = refCarga;
 	}
-//	@JsonFormat(pattern=FileTransferConstantes.JSON_DATE_FORMAT)
-//	public LocalDate getFechaDescarga() {
-//		return fechaDescarga;
-//	}
-//	public void setFechaDescarga(LocalDate fechaDescarga) {
-//		this.fechaDescarga = fechaDescarga;
-//	}
+	
+	//CHAPUZAS HEREDADAS VARIAS: F_DESCARGA tipo CHARACTER en FCTPDNPRV
 	public String getFechaDescarga() {
 		return fechaDescarga;
 	}

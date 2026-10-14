@@ -277,6 +277,9 @@ public class FileTransferUtils {
 				estadoGeneral = FileTransferConstantes.ESTADO_3_FICH_RECHAZADO;
 				break;
 			}
+			if(estadoFAC.equals(FileTransferConstantes.ESTADO_5_FAC_SIN_CONTABILIZAR)){
+				estadoGeneral = FileTransferConstantes.ESTADO_7_FICH_SIN_DOC;
+			}
 			if(estadoFAC.equals(FileTransferConstantes.ESTADO_7_FICH_SIN_DOC)){
 				estadoGeneral = FileTransferConstantes.ESTADO_7_FICH_SIN_DOC;
 			}

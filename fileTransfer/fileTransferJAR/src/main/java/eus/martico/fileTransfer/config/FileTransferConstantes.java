@@ -80,7 +80,7 @@ public class FileTransferConstantes {
 	
 	//Codigos Bloqueos
 	public static final String BLOQ_VALIDADOR	= "VALIDADOR";
-//	public static final String BLOQ_FIRMADOR	= "FIRMADOR";	//OLD descartado
+//	public static final String BLOQ_FIRMADOR	= "FIRMADOR";	//XXX descartado firmador
 	
 	public static final byte ORDEN_ASCENDENTE = 1;
 	public static final byte ORDEN_DESCENDENTE = -1;
@@ -132,9 +132,6 @@ public class FileTransferConstantes {
 //	public static final String CODIGO_NULO_VACIO = "--";
 //	public static final Character OBSERVACIONES_SEPARADOR = '#';
 //	public static final Character OBSERVACIONES_SEPARADOR_AUTO = ' ';
-//	OLD DELETE EN DESUSO
-//	public static final String CONVERT_API_TK_FREE		= "filetransfer.convert.api.token.FREE";
-//	public static final String CONVERT_API_TK_PROD		= "filetransfer.convert.api.token.PROD";
 	
 	public static final String CERT_ENV			= "filetransfer.certificados.entorno";
 	public static final String CERT_PATH 		= "filetransfer.certificados.ruta";
@@ -143,7 +140,7 @@ public class FileTransferConstantes {
 	public static final String CERT_TSA_USER 	= "filetransfer.certificados.tsa-user";
 	public static final String CERT_TSA_PASS 	= "filetransfer.certificados.tsa-pass";
 	
-//	NEW descartado
+//	XXX descartado firmador
 //	public static final int ESTADO_FIRMA_INICIO 		= FileTransferConfiguration.getIntProperty("estado.firmado.inicio");
 //	public static final int ESTADO_FIRMA_MARTICO 		= FileTransferConfiguration.getIntProperty("estado.firmado.martico");
 //	public static final int ESTADO_FIRMA_TRANSPORTISTA 	= FileTransferConfiguration.getIntProperty("estado.firmado.transpo");

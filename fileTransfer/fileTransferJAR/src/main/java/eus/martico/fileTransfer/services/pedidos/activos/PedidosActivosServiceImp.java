@@ -195,16 +195,18 @@ public class PedidosActivosServiceImp implements PedidosActivosIService {
 	 * @param _provName String
 	 * @param _track String
 	 * @param _refCharge String
+	 * @param _fecDesde String
+	 * @param _fecHasta String
 	 * 
 	 * @return List<PedidoProveedorVO>
 	 * @throws PedidosActivosServiceException
 	 * @throws PedidoFilesException
 	 */
 	@Override
-	public List<PedidoProveedorVO> getPedidosFiltrados(MyServiceContext _context, String _expCod, String _provName, String _track, String _refCharge) 
+	public List<PedidoProveedorVO> getPedidosFiltrados(MyServiceContext _context, String _expCod, String _provName, String _track, String _refCharge, String _fecDesde, String _fecHasta) 
 			throws PedidosActivosServiceException, PedidoFilesException {
 		try {
-			return pedidosActivosDAO.getPedidosFiltrados(_context, _expCod, _provName, _track, _refCharge);
+			return pedidosActivosDAO.getPedidosFiltrados(_context, _expCod, _provName, _track, _refCharge, _fecDesde, _fecHasta);
 		} catch (PedidosActivosException e) {
 			throw new PedidosActivosServiceException(e.getMessage());
 		}

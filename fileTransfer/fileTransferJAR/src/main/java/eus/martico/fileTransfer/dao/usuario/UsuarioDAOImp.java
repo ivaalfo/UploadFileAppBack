@@ -620,7 +620,7 @@ public class UsuarioDAOImp extends BaseGenDAO<UsuarioVO> implements UsuarioIDAO 
 		}
 	}
 	
-//	//NEW descartado
+//	//XXX descartado firmador
 //	@Override
 //	public String getSqlPedidosFirma(boolean isExterno){
 //		StringBuilder sql = new StringBuilder();

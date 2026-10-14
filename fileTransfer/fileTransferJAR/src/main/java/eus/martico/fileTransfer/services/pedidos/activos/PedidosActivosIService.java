@@ -29,6 +29,6 @@ public interface PedidosActivosIService {
 	Integer setPedidoNulo(MyServiceContext _context, String _pedidoTrack, String _pedidoExp, String _motivo) 
 			throws PedidoFilesException;
 	
-	List<PedidoProveedorVO> getPedidosFiltrados(MyServiceContext _context, String _expCod, String _provName, String _track, String _refCharge) 
+	List<PedidoProveedorVO> getPedidosFiltrados(MyServiceContext _context, String _expCod, String _provName, String _track, String _refCharge, String fecDesde, String fecHasta) 
 			throws PedidosActivosServiceException, PedidoFilesException;
 }

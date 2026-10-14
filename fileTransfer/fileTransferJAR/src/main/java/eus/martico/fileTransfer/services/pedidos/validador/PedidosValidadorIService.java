@@ -39,12 +39,14 @@ public interface PedidosValidadorIService {
 	 * @param _provName String
 	 * @param _track String
 	 * @param _refCharge String
+	 * @param _fecHasta String
+	 * @param _fecDesde String
 	 * 
 	 * @return List<PedidoProveedorVO>
 	 * @throws PedidosValidadorServiceException
 	 * @throws PedidoFilesException
 	 */
-	List<PedidoProveedorVO> getPedidosFiltrados(MyServiceContext _context, String _expCod, String _provName, String _track, String _refCharge) 
+	List<PedidoProveedorVO> getPedidosFiltrados(MyServiceContext _context, String _expCod, String _provName, String _track, String _refCharge, String _fecDesde, String _fecHasta) 
 			throws PedidosValidadorServiceException, PedidoFilesException;
 
 }

@@ -237,25 +237,7 @@ public class TablaDeTablasDAOImp extends BaseGenDAO<TablaDetalleVO> implements T
 	public  List<TablaDetalleVO> getByCodigoCabecera(final String _codigoCabecera) throws TablaDeTablasDAOException {
 		try {
 			List<TablaDetalleVO> datos;
-			String sqlSelect = "";
-				//Para el filtro de Muelles/Ptos de Transporte
-//			if(_codigoCabecera.equals("PUNTO_TRANSP_ALM")){
-//				String _codigoCabeceraPT = _codigoCabecera.substring(0, 12);
-//				String sqlSelectDockStorePoints = "SELECT det.* FROM ENGNVTBDET det WHERE det.TBCABNI = ( SELECT cab.TBCABNI FROM ENGNTTBCAB cab WHERE cab.TBCABCOD = ?) AND TBDETINAC = 0 AND TBDETTIP = 'ALM' ORDER BY det.TBDETCOD";
-//				logger.trace(sqlSelectDockStorePoints);
-//				datos = this.jdbcTemplate.query(sqlSelectDockStorePoints, 
-//				new PreparedStatementSetter() {
-//					public void setValues(PreparedStatement ps)  
-//						    throws SQLException{  
-//							int i=1;
-//							logger.trace(_codigoCabeceraPT);
-//							ps.setString(i++, _codigoCabeceraPT);
-//						} 
-//				}, new TablaDeTablasDetalleDAOImpMapper());
-//				for(TablaDetalleVO dato : datos){
-//					dato.setDescEs(dato.getDescEs().toUpperCase());
-//				}
-//			} else {			
+			String sqlSelect = "";			
 				if(_codigoCabecera.equals(FileTransferConstantes.TT_AUTOR_ROLES)){
 					sqlSelect  = sqlSelectDetalleByCabeceraFT.toString();
 				} else {
@@ -271,7 +253,6 @@ public class TablaDeTablasDAOImp extends BaseGenDAO<TablaDetalleVO> implements T
 							ps.setString(i++, _codigoCabecera);
 						} 
 				}, new TablaDeTablasDetalleDAOImpMapper());
-//			}
 			if (datos.isEmpty()) {
 				logger.trace("datos empty");
 				return null;

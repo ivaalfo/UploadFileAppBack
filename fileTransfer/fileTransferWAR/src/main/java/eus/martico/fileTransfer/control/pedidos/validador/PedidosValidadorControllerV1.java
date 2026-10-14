@@ -198,10 +198,12 @@ public class PedidosValidadorControllerV1 extends PedidosValidadorServiceImp {
 			@RequestParam(required=false) String expediente,
 			@RequestParam(required=false) String provName,
 			@RequestParam(required=false) String trFilterValue,
-			@RequestParam(required=false) String refCharge)
+			@RequestParam(required=false) String refCharge,
+			@RequestParam(required=false) String fecDesde,
+	        @RequestParam(required=false) String fecHasta)
 					throws PedidosValidadorServiceException, PedidoFilesException {
 		MyServiceContext context = MyControlUtils.getServiceContext(user);
-		return pedidosValidadorService.getPedidosFiltrados(context, expediente, provName, trFilterValue, refCharge);
+		return pedidosValidadorService.getPedidosFiltrados(context, expediente, provName, trFilterValue, refCharge, fecDesde, fecHasta);
 	}
 	
 	@ExceptionHandler(PedidosValidadorServiceException.class)

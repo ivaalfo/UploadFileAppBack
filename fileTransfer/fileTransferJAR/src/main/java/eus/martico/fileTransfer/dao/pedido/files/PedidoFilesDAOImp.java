@@ -240,7 +240,7 @@ public class PedidoFilesDAOImp extends BaseGenDAO<PedidoFilesVO> implements Pedi
 	@Override
 	public PedidoFilesVO updateCMR(PedidoFilesVO _pedidoF) throws PedidoFilesException {
 		try {
-			//chapuzas varias: W2USUARIO precision 40; F1USECMR, F1USEFAC, F1USEOTR, todos precision 10
+			//CHAPUZAS HEREDADAS VARIAS: W2USUARIO precision 40; F1USECMR, F1USEFAC, F1USEOTR, todos precision 10
 			final String usuFTarchiCMR;
 			if(_pedidoF.getUsuSubidaCMR().length()>10){
 				usuFTarchiCMR = _pedidoF.getUsuSubidaCMR().substring(0, 10);
@@ -275,7 +275,7 @@ public class PedidoFilesDAOImp extends BaseGenDAO<PedidoFilesVO> implements Pedi
 	@Override
 	public PedidoFilesVO updateFAC(PedidoFilesVO _pedidoF) throws PedidoFilesException {
 		try {
-			//chapuzas varias: W2USUARIO precision 40; F1USECMR, F1USEFAC, F1USEOTR, todos precision 10
+			//CHAPUZAS HEREDADAS VARIAS: W2USUARIO precision 40; F1USECMR, F1USEFAC, F1USEOTR, todos precision 10
 			final String usuFTarchiFAC;
 			if(_pedidoF.getUsuSubidaFAC().length()>10){
 				usuFTarchiFAC = _pedidoF.getUsuSubidaFAC().substring(0, 10);
@@ -310,7 +310,7 @@ public class PedidoFilesDAOImp extends BaseGenDAO<PedidoFilesVO> implements Pedi
 	@Override
 	public PedidoFilesVO updateOTR(PedidoFilesVO _pedidoF) throws PedidoFilesException {
 		try {
-			//chapuzas varias: W2USUARIO precision 40; F1USECMR, F1USEFAC, F1USEOTR, todos precision 10
+			//CHAPUZAS HEREDADAS VARIAS: W2USUARIO precision 40; F1USECMR, F1USEFAC, F1USEOTR, todos precision 10
 			final String usuFTarchiOTR;
 			if(_pedidoF.getUsuSubidaOTR().length()>10){
 				usuFTarchiOTR = _pedidoF.getUsuSubidaOTR().substring(0, 10);

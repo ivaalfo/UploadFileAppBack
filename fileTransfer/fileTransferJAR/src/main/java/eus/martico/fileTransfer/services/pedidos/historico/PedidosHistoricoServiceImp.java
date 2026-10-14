@@ -56,10 +56,10 @@ public class PedidosHistoricoServiceImp implements PedidosHistoricoIService {
 	}
 
 	@Override
-	public List<PedidoProveedorVO> getPedidosFiltrados(MyServiceContext _context, String _expCod, String _provName, String _track, String _facNum, String _refCharge) 
+	public List<PedidoProveedorVO> getPedidosFiltrados(MyServiceContext _context, String _expCod, String _provName, String _track, String _facNum, String _refCharge, String _fecDesde, String _fecHasta) 
 			throws PedidosHistoricoServiceException, PedidoFilesException {
 		try {
-			return pedidoHistoricoDAO.getPedidosFiltrados(_context, _expCod, _provName, _track, _facNum, _refCharge);
+			return pedidoHistoricoDAO.getPedidosFiltrados(_context, _expCod, _provName, _track, _facNum, _refCharge, _fecDesde, _fecHasta);
 		} catch (PedidosHistoricoException e) {
 			throw new PedidosHistoricoServiceException(e.getMessage());
 		}
